@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AP Calc AB Unit 4</title>
+<meta name="description" content="Unit 4 study planner for AP Calculus AB: schedule, homework, notes and interactive related-rates labs.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231f3fbf'/%3E%3Ctext x='16' y='24' font-family='Arial' font-weight='700' font-size='22' fill='white' text-anchor='middle'%3E4%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<a class="skip" href="#agenda">Skip to the agenda</a>
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="index.html"><b>4</b>AP Calc AB</a>
+    <nav aria-label="Main">
+      <a href="#agenda">Agenda</a>
+      <a href="notes.html">Notes</a>
+      <a href="#labs">Labs</a>
+      <a href="#objectives">Objectives</a>
+    </nav>
+  </div>
+</header>
+
+<section class="cover">
+  <div class="wrap">
+    <div>
+      <h1>Unit 4: Derivatives in context</h1>
+      <p class="lede">Rates in context, related rates, motion, tangent lines and l'Hôpital. <strong>Oct 28 to the test on Tue, Nov 10.</strong></p>
+      <a class="btn" id="studyNext" href="notes.html#day6">Study next: Day 6 notes <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></a>
+    </div>
+    <aside class="sticker" aria-live="polite">
+      <div class="n" id="count">7<small>days</small></div>
+      <p id="countText">until the Unit 4 test, Tuesday Nov 10.</p>
+      <p class="next" id="next">Next class: Wed Nov 4, Day 6: Tangent line approximation.</p>
+      <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+      <p class="muted" id="done" style="font-size:.92rem;margin-top:6px;color:var(--ink-2)">Tick off homework below to track it here. Saved only on this device.</p>
+    </aside>
+  </div>
+</section>
+
+<main>
+<section class="sec" id="agenda">
+  <div class="wrap">
+    <h2>Agenda</h2>
+    <p class="intro">Days are listed in the order we did them in class, so Day 2 comes after Day 5. Homework and solutions open on Canvas, so you need to be signed in. The full schedule is also in the <a href="https://knoxschools.instructure.com/courses/1480483/files/58322467?wrap=1" target="_blank" rel="noopener">Unit 4 Overview PDF</a>.</p>
+<div class="week"><h3>Week of Oct 26</h3><div class="days">
+<article class="day rv" data-t="context" data-date="2026-10-28">
+<div class="date"><b>28</b><span>Wed · Oct</span></div>
+<h4>Day 1: Interpreting Derivatives in Context</h4>
+<h4>Day 3: Rates of Change in Other Contexts</h4>
+<p class="topic">Units, the sentence template, rate in vs. rate out</p>
+<div class="links"><a class="chip" href="https://docs.google.com/presentation/d/1g9NOh6Jriw_cf0Ld57_pX-kdgXamCdJXoLYCeWOZOrc/edit?usp=sharing" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 11.5v3M5 14.5h6" stroke="currentColor" stroke-width="1.6"/></svg>Slides</a><a class="chip" href="notes.html#day1"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7h5M5.5 10h5" stroke="currentColor" stroke-width="1.6"/></svg>Notes Day 1</a><a class="chip" href="notes.html#day3"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7h5M5.5 10h5" stroke="currentColor" stroke-width="1.6"/></svg>Notes Day 3</a></div>
+<ul>
+<li><label class="hw"><input type="checkbox" data-hw="d1" aria-label="Done: Day 1 HW"><a href="https://knoxschools.instructure.com/courses/1480483/files/58322485?wrap=1" target="_blank" rel="noopener">Day 1 HW</a></label><a class="sol" href="https://knoxschools.instructure.com/courses/1480483/files/58894026?wrap=1" target="_blank" rel="noopener">solutions</a></li>
+<li><label class="hw"><input type="checkbox" data-hw="d3" aria-label="Done: Day 3 HW"><a href="https://knoxschools.instructure.com/courses/1480483/files/58322493?wrap=1" target="_blank" rel="noopener">Day 3 HW</a></label><a class="sol" href="https://knoxschools.instructure.com/courses/1480483/files/58894031?wrap=1" target="_blank" rel="noopener">solutions</a></li>
+</ul>
+</article>
+<article class="day rv" data-t="rates" data-date="2026-10-29">
+<div class="date"><b>29</b><span>Thu · Oct</span></div>
+<h4>Day 4: Intro to Related Rates</h4>
+<p class="topic">The five steps; constants go in before you differentiate</p>
+<div class="links"><a class="chip" href="https://docs.google.com/presentation/d/1tcMjKQSHax-dS-yUm7H7L6j7RPq1dc1sZL8yBNyeo1Y/edit?usp=sharing" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 11.5v3M5 14.5h6" stroke="currentColor" stroke-width="1.6"/></svg>Slides</a><a class="chip" href="notes.html#day4"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7h5M5.5 10h5" stroke="currentColor" stroke-width="1.6"/></svg>Notes</a><a class="chip" href="labs/index.html#sheet4"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 5v6l5-3z" fill="currentColor"/></svg>Draining tank lab</a></div>
+<ul>
+<li><label class="hw"><input type="checkbox" data-hw="d4" aria-label="Done: Day 4 HW"><a href="https://knoxschools.instructure.com/courses/1480483/files/58894072?wrap=1" target="_blank" rel="noopener">Day 4 HW</a></label><a class="sol" href="https://knoxschools.instructure.com/courses/1480483/files/58896941?wrap=1" target="_blank" rel="noopener">solutions</a></li>
+</ul>
+</article>
+<article class="day rv" data-t="rates" data-date="2026-10-30">
+<div class="date"><b>30</b><span>Fri · Oct</span></div>
+<h4>Day 5: More Advanced Related Rates</h4>
+<p class="topic">Cones and similar triangles. Quiz over Days 1 and 3</p>
+<div class="links"><a class="chip" href="https://docs.google.com/presentation/d/1nG9-Aefs06rYTW5-BJoYTr1UZqpcMHemzW-Tz_BIzqg/edit?usp=sharing" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 11.5v3M5 14.5h6" stroke="currentColor" stroke-width="1.6"/></svg>Slides</a><a class="chip" href="notes.html#day5"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7h5M5.5 10h5" stroke="currentColor" stroke-width="1.6"/></svg>Notes</a><a class="chip" href="labs/index.html"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 5v6l5-3z" fill="currentColor"/></svg>Cylinder, cars and bubble labs</a></div>
+<ul>
+<li><label class="hw"><input type="checkbox" data-hw="d5" aria-label="Done: Day 5 HW"><a href="https://knoxschools.instructure.com/courses/1480483/files/58894073?wrap=1" target="_blank" rel="noopener">Day 5 HW</a></label><a class="sol" href="https://knoxschools.instructure.com/courses/1480483/files/58909238?wrap=1" target="_blank" rel="noopener">solutions</a></li>
+<li><label class="hw"><input type="checkbox" data-hw="rrp" aria-label="Done: Related Rates Practice"><a href="https://knoxschools.instructure.com/courses/1480483/files/58909230?wrap=1" target="_blank" rel="noopener">Related Rates Practice</a></label><a class="sol" href="https://knoxschools.instructure.com/courses/1480483/files/58918664?wrap=1" target="_blank" rel="noopener">solutions</a></li>
+</ul>
+</article>
+</div></div>
+<div class="week"><h3>Week of Nov 2</h3><div class="days">
+<article class="day rv" data-t="motion" data-date="2026-11-02">
+<div class="date"><b>2</b><span>Mon · Nov</span></div>
+<h4>Day 2: Connecting Position, Velocity, and Acceleration</h4>
+<p class="topic">Signs of v and a, at rest, speeding up</p>
+<div class="links"><a class="chip" href="https://docs.google.com/presentation/d/1qNGkA2BO0pcnLeIAGS8iSoAlbhqnRyVx1R2_WWc9YDg/edit?usp=sharing" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 11.5v3M5 14.5h6" stroke="currentColor" stroke-width="1.6"/></svg>Slides</a><a class="chip" href="notes.html#day2"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7h5M5.5 10h5" stroke="currentColor" stroke-width="1.6"/></svg>Notes</a><a class="chip" href="labs/index.html#sheet5"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 5v6l5-3z" fill="currentColor"/></svg>Velocity Raptor lab</a><a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58926234?wrap=1" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7h5M5.5 10h5" stroke="currentColor" stroke-width="1.6"/></svg>Motion Overview</a></div>
+<ul>
+<li><label class="hw"><input type="checkbox" data-hw="d2" aria-label="Done: Day 2 HW"><a href="https://knoxschools.instructure.com/courses/1480483/files/58894074?wrap=1" target="_blank" rel="noopener">Day 2 HW</a></label><a class="sol" href="https://knoxschools.instructure.com/courses/1480483/files/58926242?wrap=1" target="_blank" rel="noopener">solutions</a></li>
+<li><label class="hw"><input type="checkbox" data-hw="ctc" aria-label="Done: Crack the Code"><a href="https://knoxschools.instructure.com/courses/1480483/files/58926240?wrap=1" target="_blank" rel="noopener">Crack the Code</a></label><a class="sol" href="https://knoxschools.instructure.com/courses/1480483/files/58926241?wrap=1" target="_blank" rel="noopener">solutions</a></li>
+</ul>
+</article>
+<article class="day rv" data-t="approx" data-date="2026-11-04">
+<div class="date"><b>4</b><span>Wed · Nov</span></div>
+<h4>Day 6: Approximating Values with Tangent Lines</h4>
+<p class="topic">Linearization; over or under from concavity. AP Exam sign-up closes today (AB-only students)</p>
+<div class="links"><span class="chip muted">Slides not posted yet</span><a class="chip" href="notes.html#day6"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7h5M5.5 10h5" stroke="currentColor" stroke-width="1.6"/></svg>Notes</a></div>
+<ul>
+<li><label class="hw"><input type="checkbox" data-hw="d6" aria-label="Done: Day 6 HW"><a href="https://knoxschools.instructure.com/courses/1480483/files/58894075?wrap=1" target="_blank" rel="noopener">Day 6 HW</a></label><span class="sol">solutions not posted</span></li>
+</ul>
+</article>
+<article class="day rv" data-t="approx" data-date="2026-11-05">
+<div class="date"><b>5</b><span>Thu · Nov</span></div>
+<h4>Day 7: l&#x27;Hôpital&#x27;s Rule</h4>
+<p class="topic">Limits that come out 0/0 or ∞/∞</p>
+<div class="links"><span class="chip muted">Slides not posted yet</span><a class="chip" href="notes.html#day7"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7h5M5.5 10h5" stroke="currentColor" stroke-width="1.6"/></svg>Notes</a></div>
+<ul>
+<li><label class="hw"><input type="checkbox" data-hw="d7" aria-label="Done: Day 7 HW"><a href="https://knoxschools.instructure.com/courses/1480483/files/58894076?wrap=1" target="_blank" rel="noopener">Day 7 HW</a></label><span class="sol">solutions not posted</span></li>
+</ul>
+</article>
+<article class="day rv" data-t="test" data-date="2026-11-06">
+<div class="date"><b>6</b><span>Fri · Nov</span></div>
+<h4>Review</h4>
+<p class="topic">Personal Progress Checks</p>
+<div class="links"><span class="chip muted">Slides not posted yet</span><a class="chip" href="notes.html#review"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7h5M5.5 10h5" stroke="currentColor" stroke-width="1.6"/></svg>Notes</a></div>
+<ul>
+<li><label class="hw"><input type="checkbox" data-hw="mcq" aria-label="Done: PPC MCQ (on AP Classroom)"><span>PPC MCQ (on AP Classroom)</span></label></li>
+<li><label class="hw"><input type="checkbox" data-hw="ppca" aria-label="Done: PPC FRQ Part A"><a href="https://knoxschools.instructure.com/courses/1480483/files/56036032?wrap=1" target="_blank" rel="noopener">PPC FRQ Part A</a></label><span class="sol">solutions not posted</span></li>
+<li><label class="hw"><input type="checkbox" data-hw="ppcb" aria-label="Done: PPC FRQ Part B"><a href="https://knoxschools.instructure.com/courses/1480483/files/56036246?wrap=1" target="_blank" rel="noopener">PPC FRQ Part B</a></label><span class="sol">solutions not posted</span></li>
+</ul>
+</article>
+</div></div>
+<div class="week"><h3>Week of Nov 9</h3><div class="days">
+<article class="day rv" data-t="approx" data-date="2026-11-09">
+<div class="date"><b>9</b><span>Mon · Nov</span></div>
+<h4>Bonus: Newton&#x27;s Method</h4>
+<p class="topic">How some calculators find zeros from a graph</p>
+<div class="links"><span class="chip muted">Slides not posted yet</span><a class="chip" href="notes.html#newton"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5h7l3 3v10H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5.5 7h5M5.5 10h5" stroke="currentColor" stroke-width="1.6"/></svg>Notes</a></div>
+</article>
+<article class="day rv is-test" data-t="test" data-date="2026-11-10">
+<div class="date"><b>10</b><span>Tue · Nov</span></div>
+<h4>Unit 4 Test</h4>
+<p class="topic">Everything on this page. Bring your calculator.</p>
+</article>
+</div></div>
+  </div>
+</section>
+
+<section class="sec" id="topics">
+  <div class="wrap split">
+    <div>
+      <h2 class="sec-h">Four ideas, one test</h2>
+      <p class="intro">Every day in the agenda carries a colored tab for its topic. Study by color the night before the test.</p>
+      <ul class="strands">
+        <li class="rv" style="--c:var(--t-context)"><i></i><div><b>Rates in context</b><span>Days 1 and 3. Say what f′(a) means in words, with units and time.</span></div></li>
+        <li class="rv" style="--c:var(--t-rates);--d:60ms"><i></i><div><b>Related rates</b><span>Days 4 and 5. One equation, differentiate in t, plug in last.</span></div></li>
+        <li class="rv" style="--c:var(--t-motion);--d:120ms"><i></i><div><b>Motion on a line</b><span>Day 2. x, v = x′, a = v′, and what their signs mean.</span></div></li>
+        <li class="rv" style="--c:var(--t-approx);--d:180ms"><i></i><div><b>Approximation and limits</b><span>Days 6, 7 and the Newton's Method bonus.</span></div></li>
+      </ul>
+    </div>
+    <div id="objectives">
+      <h2 class="sec-h">Learning objectives</h2>
+      <p class="intro">The AP codes from the Canvas page and the days that cover them.</p>
+      <table class="obj rv">
+        <thead><tr><th scope="col">Code</th><th scope="col">You can…</th><th scope="col">Study</th></tr></thead>
+        <tbody>
+          <tr><td>CHA-3.A</td><td>Interpret the meaning of a derivative in context.</td><td><a href="notes.html#day1">Day 1</a></td></tr>
+          <tr><td>CHA-3.B</td><td>Calculate rates of change in applied contexts.</td><td><a href="notes.html#day3">Day 3</a>, <a href="notes.html#day2">Day 2</a></td></tr>
+          <tr><td>CHA-3.C</td><td>Interpret rates of change in applied contexts.</td><td><a href="notes.html#day3">Day 3</a>, <a href="notes.html#day2">Day 2</a></td></tr>
+          <tr><td>CHA-3.D</td><td>Calculate related rates in applied contexts.</td><td><a href="notes.html#day4">Day 4</a>, <a href="notes.html#day5">Day 5</a></td></tr>
+          <tr><td>CHA-3.E</td><td>Interpret related rates in applied contexts.</td><td><a href="notes.html#day4">Day 4</a>, <a href="notes.html#day5">Day 5</a></td></tr>
+          <tr><td>CHA-3.F</td><td>Approximate a value on a curve given the equation of a tangent line.</td><td><a href="notes.html#day6">Day 6</a></td></tr>
+          <tr><td>LIM-4.A</td><td>Determine limits of functions that result in indeterminate forms.</td><td><a href="notes.html#day7">Day 7</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="labs">
+  <div class="wrap">
+    <h2>Labs: watch the rates move</h2>
+    <p class="intro">Five interactive sheets. Press play, drag across the graph to scrub time, and check the answer table against your homework.</p>
+    <div class="labs">
+      <a class="lab rv" href="labs/index.html">
+        <div class="lab-pic" style="background:#2b4fd6">
+          <svg viewBox="0 0 320 180" width="100%" height="100%" role="img" aria-label="A cylinder with its radius shrinking">
+            <rect width="320" height="180" fill="#1f3fbf"/>
+            <ellipse cx="160" cy="132" rx="70" ry="16" fill="#c9d4ff"/>
+            <rect x="90" y="52" width="140" height="80" fill="#c9d4ff"/>
+            <ellipse cx="160" cy="52" rx="70" ry="16" fill="#ffffff"/>
+            <ellipse cx="160" cy="132" rx="44" ry="10" fill="none" stroke="#f0782d" stroke-width="3" stroke-dasharray="6 5"/>
+            <path d="M160 52h70" stroke="#f0782d" stroke-width="4"/><path d="M214 44l16 8-16 8" fill="none" stroke="#f0782d" stroke-width="4" transform="rotate(180 222 52)"/>
+            <text x="250" y="57" fill="#ffffff" font-family="Figtree,sans-serif" font-size="16" font-style="italic">r</text>
+            <path d="M246 52v80" stroke="#ffffff" stroke-width="2"/><text x="256" y="98" fill="#ffffff" font-family="Figtree,sans-serif" font-size="16" font-style="italic">h = 7</text>
+          </svg>
+        </div>
+        <div class="lab-txt">
+          <h3>Shrinking cylinder</h3>
+          <p class="eq">Height fixed at 7 in, radius shrinking 3 in/s. Find <var>dV</var>/<var>dt</var>.</p>
+          <p>The rate is <span class="ans">−42π<var>r</var> in³/s</span>, so halving the radius halves the rate.</p>
+          <span class="go">Open sheet 1 <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span>
+        </div>
+      </a>
+      <a class="lab rv" href="labs/index.html#sheet2">
+        <div class="lab-pic"><img src="assets/img/road.jpg" alt="Aerial view of the intersection from the two-cars simulation" loading="lazy" width="900" height="563"></div>
+        <div class="lab-txt">
+          <h3>Two cars and an angle</h3>
+          <p class="eq">Yellow car east at 60 mph, white car south toward the corner at 40 mph. Find <var>dθ</var>/<var>dt</var> at <var>x</var> = 8, <var>y</var> = 6.</p>
+          <p>Uses tan θ = <var>y</var>/<var>x</var>. Watch θ fall from π/2 to 0.</p>
+          <span class="go">Open sheet 2 <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span>
+        </div>
+      </a>
+      <a class="lab rv" href="labs/index.html#sheet3">
+        <div class="lab-pic"><img src="assets/img/yard.jpg" alt="Backyard scene from the soap bubble simulation" loading="lazy" width="900" height="563"></div>
+        <div class="lab-txt">
+          <h3>Growing soap bubble</h3>
+          <p class="eq">Air goes in at 8π cm³/s. When <var>V</var> = 288π cm³, find <var>r</var>, <var>dr</var>/<var>dt</var> and <var>dS</var>/<var>dt</var>.</p>
+          <p>At that instant <span class="ans"><var>r</var> = 6 cm</span>, and the radius grows more slowly as the bubble gets bigger.</p>
+          <span class="go">Open sheet 3 <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span>
+        </div>
+      </a>
+      <a class="lab rv" href="labs/index.html#sheet4">
+        <div class="lab-pic"><img src="assets/img/tank-bg.jpg" alt="Water tank from the draining tank simulation" loading="lazy" width="900" height="563"></div>
+        <div class="lab-txt">
+          <h3>Draining water tank</h3>
+          <p class="eq">Radius 4 ft, height falling 0.1 ft/s. How fast is the volume changing?</p>
+          <p>This is the Day 4 check-your-understanding problem: <span class="ans">−1.6π ft³/s</span>, the same at every moment.</p>
+          <span class="go">Open sheet 4 <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span>
+        </div>
+      </a>
+      <a class="lab rv" href="labs/index.html#sheet5">
+        <div class="lab-pic"><img src="assets/img/jurassic.jpg" alt="Jungle trail from the Velocity Raptor simulation" loading="lazy" width="900" height="394"></div>
+        <div class="lab-txt">
+          <h3>Velocity Raptor</h3>
+          <p class="eq">Motion on a line: pick a case from the sign tables and launch the raptor.</p>
+          <p>Same signs on <var>v</var> and <var>a</var> means speeding up; opposite signs means slowing down.</p>
+          <span class="go">Open sheet 5 <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="big">Unit 4</p>
+    <div class="row">
+      <p>Made by a student for AP Calc AB, period 1. Homework and slides belong to our teacher and open on Canvas.</p>
+      <p><a href="notes.html">Study notes</a> · <a href="labs/index.html">Labs</a> · <a href="#agenda">Back to the agenda</a></p>
+    </div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
