@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Unit 4 Study Notes</title>
+<meta name="description" content="Day-by-day study notes and worked examples for AP Calculus AB Unit 4.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231f3fbf'/%3E%3Ctext x='16' y='24' font-family='Arial' font-weight='700' font-size='22' fill='white' text-anchor='middle'%3E4%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<a class="skip" href="#day1">Skip to the notes</a>
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="index.html"><b>4</b>AP Calc AB</a>
+    <nav aria-label="Main">
+      <a href="index.html#agenda">Agenda</a>
+      <a href="notes.html" aria-current="page">Notes</a>
+      <a href="index.html#labs">Labs</a>
+      <a href="index.html#objectives">Objectives</a>
+    </nav>
+  </div>
+</header>
+
+<section class="notes-head">
+  <div class="wrap">
+    <h1>Study notes</h1>
+    <p>What each day boils down to, one worked example each, and where to practice. Answers are highlighted the way they are on the slides.</p>
+  </div>
+</section>
+
+<div class="wrap layout">
+  <nav class="toc" aria-label="Lessons">
+    <ol>
+      <li><a href="#day1" style="--c:var(--t-context)"><i></i><span>Day 1<small>Derivatives in context</small></span></a></li>
+      <li><a href="#day2" style="--c:var(--t-motion)"><i></i><span>Day 2<small>Position, velocity, acceleration</small></span></a></li>
+      <li><a href="#day3" style="--c:var(--t-context)"><i></i><span>Day 3<small>Rates in other contexts</small></span></a></li>
+      <li><a href="#day4" style="--c:var(--t-rates)"><i></i><span>Day 4<small>Intro to related rates</small></span></a></li>
+      <li><a href="#day5" style="--c:var(--t-rates)"><i></i><span>Day 5<small>More related rates</small></span></a></li>
+      <li><a href="#day6" style="--c:var(--t-approx)"><i></i><span>Day 6<small>Tangent line approximation</small></span></a></li>
+      <li><a href="#day7" style="--c:var(--t-approx)"><i></i><span>Day 7<small>l'Hôpital's Rule</small></span></a></li>
+      <li><a href="#newton" style="--c:var(--t-approx)"><i></i><span>Bonus<small>Newton's Method</small></span></a></li>
+      <li><a href="#review" style="--c:var(--t-test)"><i></i><span>Review<small>Formulas and PPCs</small></span></a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <!-- DAY 1 -->
+    <section class="lesson rv" id="day1" style="--c:var(--t-context)">
+      <h2>Day 1: Interpreting derivatives in context</h2>
+      <p class="when">Wed Oct 28 · CHA-3.A</p>
+      <div class="prose">
+        <p>The derivative gives the rate of change of the dependent variable with respect to the independent variable. Think slope: Δ<var>y</var>/Δ<var>x</var>.</p>
+        <h3>Units</h3>
+        <ul>
+          <li>Units of <var>f</var>′(<var>x</var>) are <span class="fr"><span>units of <var>f</var></span><span>units of <var>x</var></span></span></li>
+          <li>Units of <var>f</var>″(<var>x</var>) are <span class="fr"><span>units of <var>f</var>′</span><span>units of <var>x</var></span></span>, for example gallons per hour per hour.</li>
+        </ul>
+        <h3>Say it in a sentence</h3>
+        <p>Every interpretation needs three things: the <b>noun</b> (what <var>f</var> measures), the <b>units</b>, and the <b>time</b>.</p>
+        <div class="say"><b><var>f</var>′(<var>a</var>) = <var>b</var> means</b>
+          “The <span class="blank">context of f</span> is <span class="blank">increasing</span> if <var>b</var> &gt; 0 or <span class="blank">decreasing</span> if <var>b</var> &lt; 0 at a rate of |<var>b</var>| <span class="blank">units of f</span> per <span class="blank">unit of t</span> at <var>t</var> = <var>a</var> <span class="blank">units</span>.”</div>
+        <div class="ex"><b>Example</b>
+          <var>W</var>(<var>t</var>) is the number of gallons of water in a pool <var>t</var> hours after noon, and <var>W</var>′(3) = −40. What does this mean?
+          <p style="margin-top:10px"><span class="ans">The amount of water in the pool is decreasing at a rate of 40 gallons per hour at t = 3 hours.</span></p>
+        </div>
+      </div>
+      <div class="res">
+        <a class="chip" href="https://docs.google.com/presentation/d/1g9NOh6Jriw_cf0Ld57_pX-kdgXamCdJXoLYCeWOZOrc/edit?usp=sharing" target="_blank" rel="noopener">Slides (Days 1 and 3)</a>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58322485?wrap=1" target="_blank" rel="noopener">Day 1 HW</a>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58894026?wrap=1" target="_blank" rel="noopener">Solutions</a>
+      </div>
+    </section>
+
+    <!-- DAY 2 -->
+    <section class="lesson rv" id="day2" style="--c:var(--t-motion)">
+      <h2>Day 2: Position, velocity and acceleration</h2>
+      <p class="when">Mon Nov 2 · CHA-3.B, CHA-3.C</p>
+      <div class="prose">
+        <p>Position <var>x</var>(<var>t</var>). Velocity <var>v</var>(<var>t</var>) = <var>x</var>′(<var>t</var>). Acceleration <var>a</var>(<var>t</var>) = <var>v</var>′(<var>t</var>) = <var>x</var>″(<var>t</var>). Speed is |<var>v</var>(<var>t</var>)|.</p>
+        <table class="signs">
+          <thead><tr><th scope="col">If…</th><th scope="col">Then the object…</th></tr></thead>
+          <tbody>
+            <tr><td><var>v</var>(<var>t</var>) = 0</td><td>is at rest</td></tr>
+            <tr><td><var>v</var>(<var>t</var>) &gt; 0</td><td>moves right (or up)</td></tr>
+            <tr><td><var>v</var>(<var>t</var>) &lt; 0</td><td>moves left (or down)</td></tr>
+            <tr><td><var>v</var> and <var>a</var> have the same sign</td><td>is speeding up</td></tr>
+            <tr><td><var>v</var> and <var>a</var> have opposite signs</td><td>is slowing down</td></tr>
+          </tbody>
+        </table>
+        <p>Average velocity on [<var>a</var>, <var>b</var>] is <span class="fr"><span><var>x</var>(<var>b</var>) − <var>x</var>(<var>a</var>)</span><span><var>b</var> − <var>a</var></span></span> and average acceleration is <span class="fr"><span><var>v</var>(<var>b</var>) − <var>v</var>(<var>a</var>)</span><span><var>b</var> − <var>a</var></span></span>.</p>
+        <div class="ex"><b>Example</b>
+          The position of an object is <var>x</var>(<var>t</var>) = cos(3<var>t</var>) − sin(4<var>t</var>). Find the acceleration at <var>t</var> = 0.
+          <span class="math"><var>v</var>(<var>t</var>) = −3 sin(3<var>t</var>) − 4 cos(4<var>t</var>)</span>
+          <span class="math"><var>a</var>(<var>t</var>) = −9 cos(3<var>t</var>) + 16 sin(4<var>t</var>)</span>
+          <span class="math"><var>a</var>(0) = −9 + 0 = <span class="ans">−9</span></span>
+        </div>
+        <div class="ex"><b>From a velocity graph</b>
+          <ul>
+            <li>At rest where the graph of <var>v</var> crosses or touches zero.</li>
+            <li>Acceleration at a point is the slope of the <var>v</var> graph there, in units like in/s².</li>
+            <li>Speeding up or slowing down: read the sign of <var>v</var> (above or below the axis) and the sign of <var>a</var> (graph rising or falling), then compare.</li>
+          </ul>
+        </div>
+      </div>
+      <a class="labfig" href="labs/index.html#sheet5"><img src="assets/img/jurassic.jpg" alt="Jungle trail from the Velocity Raptor simulation" loading="lazy" width="900" height="394"><span>Try it: launch the raptor in each sign case</span></a>
+<div class="res">
+        <a class="chip" href="labs/index.html#sheet5">Velocity Raptor lab</a>
+        <a class="chip" href="https://docs.google.com/presentation/d/1qNGkA2BO0pcnLeIAGS8iSoAlbhqnRyVx1R2_WWc9YDg/edit?usp=sharing" target="_blank" rel="noopener">Slides</a>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58926234?wrap=1" target="_blank" rel="noopener">Motion Overview</a>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58894074?wrap=1" target="_blank" rel="noopener">Day 2 HW</a>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58926240?wrap=1" target="_blank" rel="noopener">Crack the Code</a>
+      </div>
+    </section>
+
+    <!-- DAY 3 -->
+    <section class="lesson rv" id="day3" style="--c:var(--t-context)">
+      <h2>Day 3: Rates of change in other contexts</h2>
+      <p class="when">Wed Oct 28 · CHA-3.B, CHA-3.C</p>
+      <div class="prose">
+        <p><var>y</var>′(<var>t</var>) is the rate of change of <var>y</var>(<var>t</var>) and tells you how <var>y</var> is changing.</p>
+        <ul>
+          <li><var>y</var>′(<var>t</var>) &gt; 0: <var>y</var> is increasing.</li>
+          <li><var>y</var>′(<var>t</var>) &lt; 0: <var>y</var> is decreasing.</li>
+          <li><var>y</var>′(<var>t</var>) = 0: <var>y</var> isn't changing.</li>
+        </ul>
+        <h3>Two rates: in and out</h3>
+        <p>Some problems give a rate in and a rate out. <b>Net rate of change = rate in − rate out.</b> The amount is increasing when the net rate is positive.</p>
+        <div class="say"><b>Calculator tips</b>Y1 = rate in, Y2 = rate out, Y3 = Y1 − Y2. Find where Y3 = 0 to see when the rates are equal. Round to at least 3 decimal places.</div>
+        <div class="ex"><b>Example</b>
+          A bakery prepares pastries at <var>B</var>(<var>t</var>) = 45 + 20 sin(π<var>t</var>/4) pastries per hour for 0 ≤ <var>t</var> ≤ 8, and sells them at 35 per hour. When are the two rates equal?
+          <span class="math">45 + 20 sin(π<var>t</var>/4) = 35 → sin(π<var>t</var>/4) = −½</span>
+          <span class="math">π<var>t</var>/4 = 7π/6 or 11π/6 → <span class="ans"><var>t</var> = 14/3 and 22/3 hours</span></span>
+        </div>
+      </div>
+      <div class="res">
+        <a class="chip" href="https://docs.google.com/presentation/d/1g9NOh6Jriw_cf0Ld57_pX-kdgXamCdJXoLYCeWOZOrc/edit?usp=sharing" target="_blank" rel="noopener">Slides (Days 1 and 3)</a>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58322493?wrap=1" target="_blank" rel="noopener">Day 3 HW</a>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58894031?wrap=1" target="_blank" rel="noopener">Solutions</a>
+      </div>
+    </section>
+
+    <!-- DAY 4 -->
+    <section class="lesson rv" id="day4" style="--c:var(--t-rates)">
+      <h2>Day 4: Intro to related rates</h2>
+      <p class="when">Thu Oct 29 · CHA-3.D, CHA-3.E</p>
+      <div class="prose">
+        <p>Related rates problems have several variables changing with respect to the same independent variable, usually time.</p>
+        <h3>The steps</h3>
+        <ol>
+          <li>Read the problem carefully and draw a picture.</li>
+          <li>Name the variables and label the picture. Write down every given rate as a derivative with units, and what you're asked to find. Watch for constants.</li>
+          <li>Write an equation that relates the variables. Know your geometry formulas.</li>
+          <li>Differentiate both sides with respect to <var>t</var>. Don't forget the chain rule.</li>
+          <li>Plug in the numbers last and solve for the unknown rate. Check that the answer is reasonable.</li>
+        </ol>
+        <div class="ex"><b>Example: two people walking away</b>
+          Two friends leave the same spot. One walks north at 80 yd/min, the other east at 110 yd/min. After 15 minutes, how fast is the distance between them changing?
+          <span class="math"><var>x</var>² + <var>y</var>² = <var>z</var>² → 2<var>x</var> <span class="fr"><span><var>dx</var></span><span><var>dt</var></span></span> + 2<var>y</var> <span class="fr"><span><var>dy</var></span><span><var>dt</var></span></span> = 2<var>z</var> <span class="fr"><span><var>dz</var></span><span><var>dt</var></span></span></span>
+          <span class="math">At 15 min: <var>x</var> = 1650, <var>y</var> = 1200, <var>z</var> = √(1650² + 1200²) ≈ 2040.2</span>
+          <span class="math"><span class="fr"><span><var>dz</var></span><span><var>dt</var></span></span> = <span class="fr"><span>1650(110) + 1200(80)</span><span>2040.2</span></span> ≈ <span class="ans">136.015 yd/min</span></span>
+        </div>
+        <p>The other example from class, the draining cylinder, is <a href="labs/index.html#sheet4">sheet 4 in the labs</a>: <var>V</var> = 16π<var>h</var>, so <var>dV</var>/<var>dt</var> = 16π(−0.1) = <span class="ans">−1.6π ft³/s</span>.</p>
+      </div>
+      <a class="labfig" href="labs/index.html#sheet4"><img src="assets/img/tank-bg.jpg" alt="Water tank from the draining tank simulation" loading="lazy" width="900" height="563"><span>Try it: drain the tank and watch dV/dt stay at −1.6π</span></a>
+<div class="res">
+        <a class="chip" href="labs/index.html#sheet4">Draining tank lab</a>
+        <a class="chip" href="https://docs.google.com/presentation/d/1tcMjKQSHax-dS-yUm7H7L6j7RPq1dc1sZL8yBNyeo1Y/edit?usp=sharing" target="_blank" rel="noopener">Slides</a>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58894072?wrap=1" target="_blank" rel="noopener">Day 4 HW</a>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58896941?wrap=1" target="_blank" rel="noopener">Solutions</a>
+      </div>
+    </section>
+
+    <!-- DAY 5 -->
+    <section class="lesson rv" id="day5" style="--c:var(--t-rates)">
+      <h2>Day 5: More advanced related rates</h2>
+      <p class="when">Fri Oct 30 · CHA-3.D, CHA-3.E</p>
+      <div class="prose">
+        <h3>Translate the words first</h3>
+        <ul>
+          <li>“The height of the water is increasing 2 feet per hour” → <var>dh</var>/<var>dt</var> = 2 ft/hr</li>
+          <li>“Water is pouring into the cone at 7 in³/min” → <var>dV</var>/<var>dt</var> = 7 in³/min</li>
+          <li>“The radius is decreasing 1.5 inches per minute” → <var>dr</var>/<var>dt</var> = −1.5 in/min. Decreasing means negative.</li>
+        </ul>
+        <h3>Cones: get rid of a variable</h3>
+        <p>When the formula has two changing variables but you only know one rate, use similar triangles to write one in terms of the other before you differentiate.</p>
+        <div class="ex"><b>Example</b>
+          A cone-shaped tank (point down) is 10 ft tall with a top radius of 6 ft. Water flows in at 5 ft³/min. How fast is the radius of the water's surface changing when the water is 4 ft deep?
+          <span class="math">Similar triangles: <span class="fr"><span>10</span><span>6</span></span> = <span class="fr"><span><var>h</var></span><span><var>r</var></span></span> → <var>h</var> = <span class="fr"><span>5</span><span>3</span></span><var>r</var></span>
+          <span class="math"><var>V</var> = <span class="fr"><span>1</span><span>3</span></span>π<var>r</var>²<var>h</var> = <span class="fr"><span>5</span><span>9</span></span>π<var>r</var>³ → <span class="fr"><span><var>dV</var></span><span><var>dt</var></span></span> = <span class="fr"><span>5</span><span>3</span></span>π<var>r</var>² <span class="fr"><span><var>dr</var></span><span><var>dt</var></span></span></span>
+          <span class="math">At <var>h</var> = 4, <var>r</var> = 12/5: 5 = <span class="fr"><span>5</span><span>3</span></span>π(12/5)² <span class="fr"><span><var>dr</var></span><span><var>dt</var></span></span> → <span class="fr"><span><var>dr</var></span><span><var>dt</var></span></span> = <span class="fr"><span>25</span><span>48π</span></span> ≈ <span class="ans">0.166 ft/min</span></span>
+        </div>
+        <div class="ex"><b>AP multiple choice warm-up</b>
+          A tube stays a cylinder while it stretches. <var>dh</var>/<var>dt</var> = 2 mm/s, and when <var>r</var> = 6 mm, <var>dV</var>/<var>dt</var> = 96π mm³/s. What is happening to the side surface area <var>S</var> = 2π<var>rh</var>?
+          <span class="math">96π = 2π<var>rh</var> <span class="fr"><span><var>dr</var></span><span><var>dt</var></span></span> + π<var>r</var>² <span class="fr"><span><var>dh</var></span><span><var>dt</var></span></span> = 2π(6)<var>h</var> <span class="fr"><span><var>dr</var></span><span><var>dt</var></span></span> + 72π → <var>h</var> <span class="fr"><span><var>dr</var></span><span><var>dt</var></span></span> = 2</span>
+          <span class="math"><span class="fr"><span><var>dS</var></span><span><var>dt</var></span></span> = 2π(<var>r</var> <span class="fr"><span><var>dh</var></span><span><var>dt</var></span></span> + <var>h</var> <span class="fr"><span><var>dr</var></span><span><var>dt</var></span></span>) = 2π(12 + 2) = <span class="ans">28π mm²/s, increasing</span></span>
+        </div>
+      </div>
+      <a class="labfig" href="labs/index.html#sheet2"><img src="assets/img/road.jpg" alt="Aerial view of the intersection from the two-cars simulation" loading="lazy" width="900" height="563"><span>Try it: two cars and an angle</span></a>
+<a class="labfig" href="labs/index.html#sheet3"><img src="assets/img/yard.jpg" alt="Backyard scene from the soap bubble simulation" loading="lazy" width="900" height="563"><span>Try it: a bubble growing at 8π cm³/s</span></a>
+<div class="res">
+        <a class="chip" href="labs/index.html">Cylinder lab</a>
+        <a class="chip" href="labs/index.html#sheet2">Two cars lab</a>
+        <a class="chip" href="labs/index.html#sheet3">Soap bubble lab</a>
+        <a class="chip" href="https://docs.google.com/presentation/d/1nG9-Aefs06rYTW5-BJoYTr1UZqpcMHemzW-Tz_BIzqg/edit?usp=sharing" target="_blank" rel="noopener">Slides</a>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58894073?wrap=1" target="_blank" rel="noopener">Day 5 HW</a>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58909230?wrap=1" target="_blank" rel="noopener">Related Rates Practice</a>
+      </div>
+    </section>
+
+    <!-- DAY 6 -->
+    <section class="lesson rv" id="day6" style="--c:var(--t-approx)">
+      <h2>Day 6: Approximating with tangent lines</h2>
+      <p class="when">Wed Nov 4 · CHA-3.F</p>
+      <div class="prose">
+        <p>Near <var>x</var> = <var>a</var>, a curve looks like its tangent line, so the tangent line gives a quick estimate. This is called a local linear approximation.</p>
+        <div class="say"><b>Tangent line at <var>x</var> = <var>a</var></b><var>L</var>(<var>x</var>) = <var>f</var>(<var>a</var>) + <var>f</var>′(<var>a</var>)(<var>x</var> − <var>a</var>), and <var>f</var>(<var>x</var>) ≈ <var>L</var>(<var>x</var>) for <var>x</var> close to <var>a</var>.</div>
+        <h3>Overestimate or underestimate?</h3>
+        <ul>
+          <li>Concave up (<var>f</var>″ &gt; 0): the tangent line sits below the curve, so the estimate is an <b>underestimate</b>.</li>
+          <li>Concave down (<var>f</var>″ &lt; 0): the tangent line sits above the curve, so the estimate is an <b>overestimate</b>.</li>
+          <li>Always say why: name the sign of <var>f</var>″ on the interval.</li>
+        </ul>
+        <div class="ex"><b>Example</b>
+          Estimate √4.1 with the tangent line to <var>f</var>(<var>x</var>) = √<var>x</var> at <var>x</var> = 4. Is it too big or too small?
+          <span class="math"><var>f</var>(4) = 2, <var>f</var>′(<var>x</var>) = <span class="fr"><span>1</span><span>2√<var>x</var></span></span> so <var>f</var>′(4) = ¼</span>
+          <span class="math"><var>L</var>(<var>x</var>) = 2 + ¼(<var>x</var> − 4) → <var>L</var>(4.1) = <span class="ans">2.025</span></span>
+          <p><var>f</var>″(<var>x</var>) = −¼<var>x</var><sup>−3/2</sup> &lt; 0, so <var>f</var> is concave down and 2.025 is an <span class="ans">overestimate</span>. (The calculator gives 2.0248.)</p>
+        </div>
+      </div>
+      <div class="res">
+        <span class="chip muted">Slides not posted yet</span>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58894075?wrap=1" target="_blank" rel="noopener">Day 6 HW</a>
+      </div>
+    </section>
+
+    <!-- DAY 7 -->
+    <section class="lesson rv" id="day7" style="--c:var(--t-approx)">
+      <h2>Day 7: l'Hôpital's Rule</h2>
+      <p class="when">Thu Nov 5 · LIM-4.A</p>
+      <div class="prose">
+        <p>If plugging in gives <b>0/0</b> or <b>∞/∞</b>, then</p>
+        <span class="math">lim <span class="fr"><span><var>f</var>(<var>x</var>)</span><span><var>g</var>(<var>x</var>)</span></span> = lim <span class="fr"><span><var>f</var>′(<var>x</var>)</span><span><var>g</var>′(<var>x</var>)</span></span></span>
+        <ul>
+          <li>Check the form first, and write it down. On an FRQ you must show the limit is 0/0 or ∞/∞ before you use the rule.</li>
+          <li>Take the derivative of the top and the bottom separately. This is not the quotient rule.</li>
+          <li>Still 0/0 or ∞/∞? Use it again.</li>
+          <li>It does not apply to forms like 1/0 or 5/3. Just evaluate those.</li>
+        </ul>
+        <div class="ex"><b>Examples</b>
+          <span class="math">lim<sub><var>x</var>→0</sub> <span class="fr"><span>1 − cos <var>x</var></span><span><var>x</var>²</span></span> is 0/0 → lim <span class="fr"><span>sin <var>x</var></span><span>2<var>x</var></span></span> is 0/0 → lim <span class="fr"><span>cos <var>x</var></span><span>2</span></span> = <span class="ans">½</span></span>
+          <span class="math">lim<sub><var>x</var>→∞</sub> <span class="fr"><span><var>x</var>²</span><span><var>e</var><sup><var>x</var></sup></span></span> is ∞/∞ → lim <span class="fr"><span>2<var>x</var></span><span><var>e</var><sup><var>x</var></sup></span></span> is ∞/∞ → lim <span class="fr"><span>2</span><span><var>e</var><sup><var>x</var></sup></span></span> = <span class="ans">0</span></span>
+        </div>
+      </div>
+      <div class="res">
+        <span class="chip muted">Slides not posted yet</span>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/58894076?wrap=1" target="_blank" rel="noopener">Day 7 HW</a>
+      </div>
+    </section>
+
+    <!-- NEWTON -->
+    <section class="lesson rv" id="newton" style="--c:var(--t-approx)">
+      <h2>Bonus: Newton's Method</h2>
+      <p class="when">Mon Nov 9 · extra, the way some calculators find zeros</p>
+      <div class="prose">
+        <p>Start with a guess <var>x</var><sub>0</sub> near a zero. Follow the tangent line down to the <var>x</var>-axis, and use where it lands as the next guess.</p>
+        <div class="say"><b>Repeat</b><var>x</var><sub><var>n</var>+1</sub> = <var>x<sub>n</sub></var> − <span class="fr"><span><var>f</var>(<var>x<sub>n</sub></var>)</span><span><var>f</var>′(<var>x<sub>n</sub></var>)</span></span></div>
+        <div class="ex"><b>Example: find √2</b>
+          Use <var>f</var>(<var>x</var>) = <var>x</var>² − 2, so <var>f</var>′(<var>x</var>) = 2<var>x</var>, and start at <var>x</var><sub>0</sub> = 1.
+          <span class="math"><var>x</var><sub>1</sub> = 1 − (−1)/2 = 1.5</span>
+          <span class="math"><var>x</var><sub>2</sub> = 1.5 − 0.25/3 ≈ 1.41667</span>
+          <span class="math"><var>x</var><sub>3</sub> ≈ <span class="ans">1.414216</span>, already right to 5 decimals.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVIEW -->
+    <section class="lesson rv" id="review" style="--c:var(--t-test)">
+      <h2>Review: formulas to know</h2>
+      <p class="when">Fri Nov 6 · test Tue Nov 10</p>
+      <div class="prose">
+        <p>No formula sheet on the AP exam, so these need to be memorized for related rates.</p>
+      </div>
+      <div class="formulas">
+        <div><b>Cylinder</b><var>V</var> = π<var>r</var>²<var>h</var><br>Side area 2π<var>rh</var></div>
+        <div><b>Cone</b><var>V</var> = ⅓π<var>r</var>²<var>h</var><br>Use similar triangles to link <var>r</var> and <var>h</var></div>
+        <div><b>Sphere</b><var>V</var> = <span class="fr"><span>4</span><span>3</span></span>π<var>r</var>³<br><var>S</var> = 4π<var>r</var>²</div>
+        <div><b>Right triangle</b><var>x</var>² + <var>y</var>² = <var>z</var>²<br>tan θ = opposite / adjacent</div>
+        <div><b>Circle</b><var>A</var> = π<var>r</var>², <var>C</var> = 2π<var>r</var></div>
+        <div><b>Tangent line</b><var>y</var> − <var>f</var>(<var>a</var>) = <var>f</var>′(<var>a</var>)(<var>x</var> − <var>a</var>)</div>
+      </div>
+      <div class="res">
+        <span class="chip muted">PPC MCQ is on AP Classroom</span>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/56036032?wrap=1" target="_blank" rel="noopener">PPC FRQ Part A</a>
+        <a class="chip" href="https://knoxschools.instructure.com/courses/1480483/files/56036246?wrap=1" target="_blank" rel="noopener">PPC FRQ Part B</a>
+        <a class="chip" href="index.html#agenda">Back to the agenda</a>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer class="foot">
+  <div class="wrap">
+    <p class="big">Unit 4</p>
+    <div class="row">
+      <p>Made by a student for AP Calc AB, period 1. Notes are summaries; the slides on Canvas are the source.</p>
+      <p><a href="index.html">Agenda</a> · <a href="labs/index.html">Labs</a> · <a href="#day1">Back to top</a></p>
+    </div>
+  </div>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
