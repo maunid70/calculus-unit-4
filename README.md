@@ -4,7 +4,7 @@ A static study site for Unit 4 (derivatives in context, related rates, motion, t
 
 - `index.html` — agenda by day with Canvas links, homework checkboxes (saved in each visitor's browser), test countdown, learning objectives, labs
 - `notes.html` — study notes and a worked example for every day
-- `labs/` — the five interactive related-rates sheets
+- `labs/` — the seven interactive sheets (related rates, motion, rates in context)
 
 ## Publish on GitHub Pages
 

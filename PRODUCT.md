@@ -20,7 +20,7 @@ One place for the whole class to study Unit 4: the day-by-day schedule, each les
 
 ## Positioning
 
-Student-made companion to the Canvas page. Canvas has the files; this site has the explanations plus five hands-on simulations (shrinking cylinder, two cars, soap bubble, draining tank, Velocity Raptor).
+Student-made companion to the Canvas page. Canvas has the files; this site has the explanations plus seven hands-on simulations (shrinking cylinder, two cars, soap bubble, draining tank, Velocity Raptor, evaporating cone, water in and out).
 
 ## Operating Context
 

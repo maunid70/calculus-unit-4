@@ -89,7 +89,7 @@
 <section class="sec" id="labs">
   <div class="wrap">
     <h2>Labs: watch the rates move</h2>
-    <p class="intro">Five interactive sheets. Press play, drag across the graph to scrub time, and check the answer table against your homework.</p>
+    <p class="intro">Seven interactive sheets. Press play, drag across the graph to scrub time, and check the answer table against your homework.</p>
     <div class="labs">
       <a class="lab rv" href="labs/index.html">
         <div class="lab-pic" style="background:#2b4fd6">
@@ -145,6 +145,45 @@
           <p class="eq">Motion on a line: pick a case from the sign tables and launch the raptor.</p>
           <p>Same signs on <var>v</var> and <var>a</var> means speeding up; opposite signs means slowing down.</p>
           <span class="go">Open sheet 5 <!--ARROW--></span>
+        </div>
+      </a>
+      <a class="lab rv" href="labs/index.html#sheet6">
+        <div class="lab-pic" style="background:#2b4fd6">
+          <svg viewBox="0 0 320 180" width="100%" height="100%" role="img" aria-label="A cone-shaped vessel with water evaporating">
+            <rect width="320" height="180" fill="#1f3fbf"/>
+            <path d="M160 160L124 96h72z" fill="#c9d4ff"/>
+            <ellipse cx="160" cy="96" rx="36" ry="8" fill="#ffffff"/>
+            <path d="M100 36L160 160L220 36" fill="none" stroke="#ffffff" stroke-width="3"/>
+            <ellipse cx="160" cy="36" rx="60" ry="13" fill="none" stroke="#ffffff" stroke-width="3"/>
+            <path d="M146 84c-4-6 4-10 0-16M160 82c-4-6 4-10 0-16M174 84c-4-6 4-10 0-16" fill="none" stroke="#f0782d" stroke-width="3" stroke-linecap="round"/>
+            <path d="M160 96h36" stroke="#f0782d" stroke-width="4"/>
+            <text x="306" y="168" text-anchor="end" fill="#ffffff" font-family="Figtree,sans-serif" font-size="15" font-style="italic">dh/dt = −0.1</text>
+          </svg>
+        </div>
+        <div class="lab-txt">
+          <h3>Evaporating cone</h3>
+          <p class="eq">Cone 14 m tall, 8 m across, depth falling 0.1 m/day. Find <var>dr</var>/<var>dt</var>.</p>
+          <p><span class="ans">−1/35 m/day</span>, and since <var>dV</var>/<var>dt</var> = −(2π/245)<var>h</var>², the volume falls faster when <var>h</var> is large.</p>
+          <span class="go">Open sheet 6 <!--ARROW--></span>
+        </div>
+      </a>
+      <a class="lab rv" href="labs/index.html#sheet7">
+        <div class="lab-pic" style="background:#2b4fd6">
+          <svg viewBox="0 0 320 180" width="100%" height="100%" role="img" aria-label="A tank with water flowing in at the top and leaking out at the bottom">
+            <rect width="320" height="180" fill="#1f3fbf"/>
+            <rect x="110" y="86" width="110" height="64" fill="#c9d4ff"/>
+            <path d="M110 40v110h110V40" fill="none" stroke="#ffffff" stroke-width="3"/>
+            <path d="M30 26h104" stroke="#ffffff" stroke-width="8"/><path d="M134 30v56" stroke="#c9d4ff" stroke-width="10"/>
+            <path d="M220 140h30" stroke="#ffffff" stroke-width="7"/><path d="M246 144v30" stroke="#f0782d" stroke-width="6"/>
+            <text x="40" y="54" fill="#ffffff" font-family="Figtree,sans-serif" font-size="16" font-style="italic">E(t)</text>
+            <text x="258" y="166" fill="#ffffff" font-family="Figtree,sans-serif" font-size="16" font-style="italic">L(t)</text>
+          </svg>
+        </div>
+        <div class="lab-txt">
+          <h3>Water in, water out</h3>
+          <p class="eq">Water flows in at <var>E</var>(<var>t</var>) and leaks out at <var>L</var>(<var>t</var>), crossing at <var>t</var> = 7.</p>
+          <p>Rising while <var>E</var> &gt; <var>L</var>, falling while <var>L</var> &gt; <var>E</var>, and <span class="ans">not changing at <var>t</var> = 7</span>.</p>
+          <span class="go">Open sheet 7 <!--ARROW--></span>
         </div>
       </a>
     </div>

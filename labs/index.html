@@ -81,6 +81,8 @@ table.rules th{text-align:left;font:600 13px var(--mono);color:var(--ink);paddin
 table.rules td{text-align:left;font:14px var(--font);white-space:normal}
 #w4Stage{aspect-ratio:16/10;border:1px solid var(--rule)}
 #w4Graph{aspect-ratio:16/10;cursor:crosshair;touch-action:none}
+#k6Stage,#f7Stage{aspect-ratio:16/10;border:1px solid var(--rule)}
+#k6Graph,#f7Graph{aspect-ratio:16/10;cursor:crosshair;touch-action:none}
 #b3Stage{aspect-ratio:16/10;border:1px solid var(--rule)}
 #b3Graph{aspect-ratio:16/10;cursor:crosshair;touch-action:none}
 h2{font-size:1rem}
@@ -229,9 +231,9 @@ table.ans{width:100%;border-collapse:collapse;font:500 14px var(--mono)}
 <div class="sheet" id="top">
   <p style="margin:0"><a href="../index.html" style="font:600 15px var(--font);color:var(--ink)">Back to Unit 4 home</a></p>
   <div class="strip">
-    <span>Calculus · 5 sheets</span>
+    <span>Calculus · 7 sheets</span>
     <nav aria-label="Zones">
-      <a href="#top">Sheet 1: Shrinking cylinder</a><a href="#sheet2">Sheet 2: Two cars</a><a href="#sheet3">Sheet 3: Soap bubble</a><a href="#sheet4">Sheet 4: Draining tank</a><a href="#sheet5">Sheet 5: Velocity Raptor</a>
+      <a href="#top">Sheet 1: Shrinking cylinder</a><a href="#sheet2">Sheet 2: Two cars</a><a href="#sheet3">Sheet 3: Soap bubble</a><a href="#sheet4">Sheet 4: Draining tank</a><a href="#sheet5">Sheet 5: Velocity Raptor</a><a href="#sheet6">Sheet 6: Evaporating cone</a><a href="#sheet7">Sheet 7: Water in, water out</a>
     </nav>
   </div>
 
@@ -777,8 +779,211 @@ table.ans{width:100%;border-collapse:collapse;font:500 14px var(--mono)}
     </div>
   </div>
 
+
+
+  <header class="titleblock rise" id="sheet6">
+    <div class="tb-main">
+      <h2 class="h1-2">Related rates: an evaporating cone</h2>
+      <p>A large vessel of water is a right circular cone, point down. It is 14 meters tall and the opening is 8 meters across. Water evaporates so that its depth <i class="v">h</i> falls at a constant 0.1 meters per day. Find <i class="v">dr/dt</i>, and decide whether the volume falls faster when the water is shallow or deep.</p>
+    </div>
+    <dl class="tb-specs">
+      <div><dt>Given</dt><dd class="fix">H = 14 m, opening radius 4 m</dd></div>
+      <div><dt>Given</dt><dd class="chg">dh/dt = −0.1 m/day</dd></div>
+      <div><dt>Model</dt><dd>r/h = 4/14, V = ⅓πr²h</dd></div>
+      <div><dt>Find</dt><dd>dr/dt, and dV/dt in terms of h</dd></div>
+    </dl>
+  </header>
+
+  <div class="ws">
+    <div class="col-7">
+      <section class="zone rise" id="z6A" aria-labelledby="h6A">
+        <div class="zone-h">
+          <h2 id="h6A"><span class="zid" aria-hidden="true">6A</span>Simulation</h2>
+          <span class="zone-meta" id="k6Clock">t = 0 days</span>
+        </div>
+        <div class="zone-b"><canvas id="k6Stage" aria-label="A cone-shaped vessel, point down, 14 meters tall and 8 meters across, with water evaporating so the depth falls; a ruler in meters marks the depth and the water's radius is drawn at the surface"></canvas></div>
+        <div class="ctrl">
+          <div class="cg">
+            <span class="cg-t">Playback</span>
+            <div class="row">
+              <button class="btn primary" id="k6Play">Play</button>
+              <button class="btn" id="k6Reset">Reset</button>
+            </div>
+            <div class="seg" role="group" aria-label="Playback speed for sheet 6">
+              <button class="btn" data-sp6="5" aria-pressed="false">5×</button>
+              <button class="btn" data-sp6="10" aria-pressed="true">10×</button>
+              <button class="btn" data-sp6="20" aria-pressed="false">20×</button>
+            </div>
+          </div>
+          <div class="cg">
+            <span class="cg-t">Inputs</span>
+            <div class="scrub"><label for="k6T">Time</label><input type="range" id="k6T" min="0" max="140" step="0.5" value="0"><output id="k6TOut" for="k6T">0 days</output></div>
+          </div>
+        </div>
+        <form class="solve" id="k6Form" novalidate>
+          <label for="k6HIn">Solve at <i class="v">h</i> =</label>
+          <input type="number" id="k6HIn" inputmode="decimal" min="0" max="14" step="any" placeholder="7" aria-describedby="k6Msg">
+          <span>m</span>
+          <button class="btn primary" type="submit">Jump there</button>
+          <span class="msg" id="k6Msg" role="status"></span>
+        </form>
+      </section>
+
+      <section class="zone rise" id="z6D" aria-labelledby="h6D">
+        <div class="zone-h">
+          <h2 id="h6D"><span class="zid" aria-hidden="true">6D</span><span id="k6GraphTitle">Volume over time</span></h2>
+          <div class="seg" role="group" aria-label="Quantity to graph on sheet 6">
+            <button class="btn" id="k6qV" aria-pressed="true">Volume</button>
+            <button class="btn" id="k6qR" aria-pressed="false">dV/dt</button>
+          </div>
+        </div>
+        <div class="zone-b">
+          <canvas id="k6Graph" aria-label="Graph of the volume, or of dV/dt, against time"></canvas>
+          <div class="legend">
+            <span style="--c:var(--ink)" id="k6Lg">V(t), m³</span>
+            <span class="dash" style="--c:var(--crimson)" id="k6Lg2">Tangent: slope = dV/dt right now</span>
+          </div>
+          <p class="note" id="k6Note">The volume curve is steep at the start, when the water is deep, and flattens out as the cone empties. A steeper curve means the volume is falling faster.</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-5">
+      <section class="zone inst rise" style="--i:1" aria-labelledby="h6B">
+        <div class="zone-h"><h2 id="h6B"><span class="zid" aria-hidden="true">6B</span>Readout</h2></div>
+        <div class="zone-b">
+          <div class="gauges">
+            <div class="g"><span class="v" id="k6gH"></span><span class="k">Depth h</span></div>
+            <div class="g change"><span class="v">−0.1 <small>m/day</small></span><span class="k">dh/dt, constant</span></div>
+            <div class="g"><span class="v" id="k6gR"></span><span class="k">Radius r = 2h/7</span></div>
+            <div class="g change"><span class="v">−1/35 <small>m/day</small></span><span class="k">dr/dt ≈ −0.029, constant</span></div>
+            <div class="g"><span class="v" id="k6gV"></span><span class="k">V = 4πh³/147</span></div>
+            <div class="g"><span class="v" id="k6gP"></span><span class="k">Share of the start rate</span></div>
+            <div class="g hot"><span class="v" id="k6gD"></span><span class="k">dV/dt = −2πh²/245</span></div>
+          </div>
+          <p class="insight" id="k6Insight"></p>
+        </div>
+      </section>
+
+      <section class="zone rise" style="--i:2" aria-labelledby="h6C">
+        <div class="zone-h"><h2 id="h6C"><span class="zid" aria-hidden="true">6C</span>Worked solution</h2></div>
+        <div class="zone-b"><ol class="steps" id="k6Steps"></ol></div>
+      </section>
+
+      <section class="zone rise" style="--i:3" aria-labelledby="h6E">
+        <div class="zone-h"><h2 id="h6E"><span class="zid" aria-hidden="true">6E</span>Answer table</h2></div>
+        <div class="tbl-wrap">
+          <table class="ans">
+            <caption>dr/dt stays −1/35 m/day, but dV/dt shrinks as h does. Select a time to load it into zone 6A.</caption>
+            <thead><tr><th scope="col">t (days)</th><th scope="col">h (m)</th><th scope="col">r (m)</th><th scope="col">V (m³)</th><th scope="col">dV/dt (m³/day)</th></tr></thead>
+            <tbody id="k6Body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+
+  <header class="titleblock rise" id="sheet7">
+    <div class="tb-main">
+      <h2 class="h1-2">Rates in context: water in, water out</h2>
+      <p>For 0 ≤ <i class="v">t</i> ≤ 10 minutes, water flows into a tank at <i class="v">E</i>(<i class="v">t</i>) gallons per minute and leaks out at <i class="v">L</i>(<i class="v">t</i>) gallons per minute. <i class="v">E</i> &gt; <i class="v">L</i> before <i class="v">t</i> = 7 and <i class="v">L</i> &gt; <i class="v">E</i> after. What happens to the water level before, after and at <i class="v">t</i> = 7?</p>
+      <p class="note" style="margin-top:8px">The worksheet gives no formulas, so this sheet uses sample rates that cross at <i class="v">t</i> = 7: <i class="v">E</i>(<i class="v">t</i>) = 30 − 2<i class="v">t</i>, <i class="v">L</i>(<i class="v">t</i>) = 9 + <i class="v">t</i>, and a starting 100 gallons.</p>
+    </div>
+    <dl class="tb-specs">
+      <div><dt>Rate in</dt><dd class="fix">E(t) = 30 − 2t gal/min</dd></div>
+      <div><dt>Rate out</dt><dd class="chg">L(t) = 9 + t gal/min</dd></div>
+      <div><dt>Model</dt><dd>dW/dt = E(t) − L(t)</dd></div>
+      <div><dt>Find</dt><dd>Rising, falling or still?</dd></div>
+    </dl>
+  </header>
+
+  <div class="ws">
+    <div class="col-7">
+      <section class="zone rise" id="z7A" aria-labelledby="h7A">
+        <div class="zone-h">
+          <h2 id="h7A"><span class="zid" aria-hidden="true">7A</span>Simulation</h2>
+          <span class="zone-meta" id="f7Clock">t = 0.0 min</span>
+        </div>
+        <div class="zone-b"><canvas id="f7Stage" aria-label="A tank with water pouring in through a pipe at the top and leaking out of a pipe at the bottom; the width of each stream shows its rate and a scale shows the gallons in the tank"></canvas></div>
+        <div class="ctrl">
+          <div class="cg">
+            <span class="cg-t">Playback</span>
+            <div class="row">
+              <button class="btn primary" id="f7Play">Play</button>
+              <button class="btn" id="f7Reset">Reset</button>
+            </div>
+            <div class="seg" role="group" aria-label="Playback speed for sheet 7">
+              <button class="btn" data-sp7="0.5" aria-pressed="false">0.5×</button>
+              <button class="btn" data-sp7="1" aria-pressed="true">1×</button>
+              <button class="btn" data-sp7="2" aria-pressed="false">2×</button>
+            </div>
+          </div>
+          <div class="cg">
+            <span class="cg-t">Inputs</span>
+            <div class="scrub"><label for="f7T">Time</label><input type="range" id="f7T" min="0" max="10" step="0.05" value="0"><output id="f7TOut" for="f7T">0.0 min</output></div>
+          </div>
+        </div>
+        <form class="solve" id="f7Form" novalidate>
+          <label for="f7TIn">Jump to <i class="v">t</i> =</label>
+          <input type="number" id="f7TIn" inputmode="decimal" min="0" max="10" step="any" placeholder="7" aria-describedby="f7Msg">
+          <span>min</span>
+          <button class="btn primary" type="submit">Jump there</button>
+          <span class="msg" id="f7Msg" role="status"></span>
+        </form>
+      </section>
+
+      <section class="zone rise" id="z7D" aria-labelledby="h7D">
+        <div class="zone-h">
+          <h2 id="h7D"><span class="zid" aria-hidden="true">7D</span><span id="f7GraphTitle">Rate in and rate out</span></h2>
+          <div class="seg" role="group" aria-label="Quantity to graph on sheet 7">
+            <button class="btn" id="f7qR" aria-pressed="true">E and L</button>
+            <button class="btn" id="f7qW" aria-pressed="false">Water</button>
+          </div>
+        </div>
+        <div class="zone-b">
+          <canvas id="f7Graph" aria-label="Graph of the rates in and out, or of the gallons in the tank, against time"></canvas>
+          <div class="legend" id="f7Legend"></div>
+          <p class="note" id="f7Note"></p>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-5">
+      <section class="zone inst rise" style="--i:1" aria-labelledby="h7B">
+        <div class="zone-h"><h2 id="h7B"><span class="zid" aria-hidden="true">7B</span>Readout</h2></div>
+        <div class="zone-b">
+          <div class="gauges">
+            <div class="g fixed"><span class="v" id="f7gE"></span><span class="k">Rate in E(t)</span></div>
+            <div class="g change"><span class="v" id="f7gL"></span><span class="k">Rate out L(t)</span></div>
+            <div class="g"><span class="v" id="f7gW"></span><span class="k">Water in the tank W(t)</span></div>
+            <div class="g"><span class="v" id="f7gS"></span><span class="k">Water level</span></div>
+            <div class="g hot"><span class="v" id="f7gD"></span><span class="k">dW/dt = E(t) − L(t)</span></div>
+          </div>
+          <p class="insight" id="f7Insight"></p>
+        </div>
+      </section>
+
+      <section class="zone rise" style="--i:2" aria-labelledby="h7C">
+        <div class="zone-h"><h2 id="h7C"><span class="zid" aria-hidden="true">7C</span>Worked solution</h2></div>
+        <div class="zone-b"><ol class="steps" id="f7Steps"></ol></div>
+      </section>
+
+      <section class="zone rise" style="--i:3" aria-labelledby="h7E">
+        <div class="zone-h"><h2 id="h7E"><span class="zid" aria-hidden="true">7E</span>Answer table</h2></div>
+        <div class="tbl-wrap">
+          <table class="ans">
+            <caption>The sign of E − L decides rising or falling. Select a time to load it into zone 7A.</caption>
+            <thead><tr><th scope="col">t (min)</th><th scope="col">E</th><th scope="col">L</th><th scope="col">E − L</th><th scope="col">Level</th></tr></thead>
+            <tbody id="f7Body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
   <footer class="foot">
-    <span>Related rates · motion on a line</span>
+    <span>Related rates · motion on a line · rates in context</span>
     <span>Scenes rendered in Blender</span>
     <a href="#top">Back to top</a>
   </footer>
@@ -2050,6 +2255,494 @@ document.documentElement.classList.add('js');
   document.fonts && document.fonts.ready.then(draw);
 
   load('xn_vp'); st.t = 3; update();
+  if (!reduce && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting){ io.disconnect(); setTimeout(() => { if (!st.playing){ st.t = 0; update(); play(); } }, 500); } }, { threshold: 0.4 });
+    io.observe(stage);
+  }
+})();
+</script>
+<script>
+(() => {
+  /* ---------- sheet 6: evaporating cone.  h(t) = 14 − 0.1t, r = 2h/7, V = 4πh³/147, dV/dt = −2πh²/245 ---------- */
+  const PI = Math.PI, H0 = 14, DH = -0.1, T_END = 140;
+  const $ = id => document.getElementById(id);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const minus = s => s.replace(/-/g, '−');
+  const f = (n, d = 2) => minus((Math.abs(n) < 0.5 * Math.pow(10, -d) ? 0 : n).toFixed(d));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stage = $('k6Stage'), graph = $('k6Graph');
+  const st = { t: 0, playing: false, speed: 10, q: 'V' };
+  const Hf = t => Math.max(0, H0 + DH * t), Rf = t => 2 * Hf(t) / 7;
+  const Vf = t => 4 * PI * Math.pow(Hf(t), 3) / 147, Df = t => -2 * PI * Hf(t) * Hf(t) / 245;
+  const D0 = Df(0);
+
+  function fit(cv){
+    const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+    if (cv.width !== Math.round(w*dpr) || cv.height !== Math.round(h*dpr)){ cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+    const ctx = cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return [ctx, w, h];
+  }
+  function tag(ctx, text, x, y, opts = {}){
+    const size = opts.size || 13;
+    ctx.font = `600 ${size}px ${css('--mono')}`;
+    const w = ctx.measureText(text).width + 12, h = size + 9;
+    const W = ctx.canvas.clientWidth, H = ctx.canvas.clientHeight;
+    let bx = opts.align === 'left' ? x : opts.align === 'right' ? x - w : x - w/2, by = y - h/2;
+    bx = Math.max(4, Math.min(W - w - 4, bx)); by = Math.max(4, Math.min(H - h - 4, by));
+    ctx.fillStyle = css('--sheet'); ctx.globalAlpha = 0.94; ctx.fillRect(bx, by, w, h); ctx.globalAlpha = 1;
+    ctx.strokeStyle = css('--ink'); ctx.lineWidth = 1.2; ctx.strokeRect(bx + .5, by + .5, w - 1, h - 1);
+    ctx.fillStyle = opts.color || css('--ink'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, bx + w/2, by + h/2 + 0.5);
+  }
+
+  function drawStage(now){
+    const [ctx, W, H] = fit(stage);
+    const ink = css('--ink'), soft = css('--ink-soft'), chg = css('--crimson'), fix = css('--fixed');
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = css('--sheet'); ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = css('--c-grid'); ctx.lineWidth = 1;
+    for (let x = 0; x < W; x += 24){ ctx.beginPath(); ctx.moveTo(x + .5, 0); ctx.lineTo(x + .5, H); ctx.stroke(); }
+    for (let y = 0; y < H; y += 24){ ctx.beginPath(); ctx.moveTo(0, y + .5); ctx.lineTo(W, y + .5); ctx.stroke(); }
+    const narrow = W < 520;
+    const top = H * 0.17, bot = H * 0.92, S = (bot - top) / 14, cx = W * (narrow ? 0.56 : 0.5), RIM = 4 * S, E = 0.22;
+    const yAt = z => bot - z * S;
+    const h = Hf(st.t), ly = yAt(h), wr = 2 * h / 7 * S;
+
+    // back half of the rim
+    ctx.save(); ctx.strokeStyle = soft; ctx.lineWidth = 1.4; ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.ellipse(cx, top, RIM, RIM * E, 0, PI, 2 * PI); ctx.stroke(); ctx.restore();
+
+    // water: a smaller cone with the same shape
+    if (h > 0.001){
+      ctx.save();
+      ctx.fillStyle = css('--c-fill');
+      ctx.beginPath(); ctx.moveTo(cx, bot); ctx.lineTo(cx - wr, ly); ctx.ellipse(cx, ly, wr, wr * E, 0, PI, 0, true); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = css('--c-fill-2'); ctx.beginPath(); ctx.ellipse(cx, ly, wr, wr * E, 0, 0, 2 * PI); ctx.fill();
+      ctx.strokeStyle = fix; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.ellipse(cx, ly, wr, wr * E, 0, 0, 2 * PI); ctx.stroke();
+      ctx.restore();
+      // evaporation: wisps rising off the surface
+      const ph = st.playing && !reduce ? ((now || performance.now()) / 1600) : 0.35;
+      ctx.save(); ctx.lineWidth = 2; ctx.lineCap = 'round';
+      for (let k = 0; k < 3; k++){
+        const p = (ph + k / 3) % 1, x = cx + (k - 1) * Math.max(14, wr * 0.5), y0 = ly - 6 - p * 46;
+        ctx.globalAlpha = 0.85 * (1 - p); ctx.strokeStyle = soft;
+        ctx.beginPath();
+        for (let s = 0; s <= 16; s++){ const yy = y0 - s * 1.4, xx = x + Math.sin((s / 16) * 2 * PI + k) * 4; s ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); }
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // cone walls and the front of the rim
+    ctx.save(); ctx.strokeStyle = ink; ctx.lineWidth = 2.2; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(cx - RIM, top); ctx.lineTo(cx, bot); ctx.lineTo(cx + RIM, top); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(cx, top, RIM, RIM * E, 0, 0, PI); ctx.stroke(); ctx.restore();
+
+    // depth ruler in meters
+    const rxl = cx - RIM - (narrow ? 30 : 48);
+    ctx.save();
+    ctx.fillStyle = css('--sheet'); ctx.fillRect(rxl - 6, top - 8, 30, bot - top + 16);
+    ctx.strokeStyle = ink; ctx.lineWidth = 1.2; ctx.strokeRect(rxl - 5.5, top - 7.5, 29, bot - top + 15);
+    ctx.fillStyle = ink; ctx.font = `600 10.5px ${css('--mono')}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    for (let z = 0; z <= 14; z++){
+      const y = yAt(z), big = z % 2 === 0;
+      ctx.beginPath(); ctx.moveTo(rxl - 5, y); ctx.lineTo(rxl - 5 + (big ? 8 : 5), y); ctx.stroke();
+      if (big && (!narrow || z % 4 === 0)) ctx.fillText(z, rxl + 6, y);
+    }
+    ctx.textAlign = 'center'; ctx.fillText('m', rxl + 9, top - 16);
+    ctx.restore();
+
+    // depth marker, radius line and labels
+    ctx.save(); ctx.strokeStyle = chg; ctx.lineWidth = 2; ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.moveTo(rxl + 24, ly); ctx.lineTo(cx - wr, ly); ctx.stroke(); ctx.restore();
+    tag(ctx, `h = ${f(h, 2)} m`, rxl - 8, ly, { align: 'right', color: css('--crimson-text') });
+    if (h > 0.001){
+      ctx.save(); ctx.strokeStyle = chg; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.moveTo(cx, ly); ctx.lineTo(cx + wr, ly); ctx.stroke(); ctx.restore();
+      tag(ctx, `r = ${f(Rf(st.t), 2)} m`, cx + wr + 12, ly + (narrow ? 22 : 0), { align: 'left', color: css('--crimson-text'), size: 12 });
+    }
+    // fixed dimensions
+    tag(ctx, '8 m across', cx, top - RIM * E - 16, { size: 11.5, color: fix });
+    if (!narrow){
+      const dx = W - 34;
+      ctx.save(); ctx.strokeStyle = fix; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(dx, top); ctx.lineTo(dx, bot); ctx.moveTo(dx - 5, top); ctx.lineTo(dx + 5, top); ctx.moveTo(dx - 5, bot); ctx.lineTo(dx + 5, bot); ctx.stroke(); ctx.restore();
+      tag(ctx, '14 m', dx, (top + bot) / 2 + 40, { size: 11.5, color: fix });
+      tag(ctx, `V = ${f(Vf(st.t), 1)} m³`, W - 10, 22, { align: 'right' });
+      tag(ctx, `dV/dt = ${f(Df(st.t), 3)} m³/day`, W - 10, 50, { align: 'right', color: css('--crimson-text'), size: 12 });
+    }
+    if (h <= 0.001) tag(ctx, 'Dry at t = 140 days', cx, (top + bot) / 2);
+  }
+
+  /* ---------- graph ---------- */
+  let plot = null;
+  function niceStep(span, n){ const raw = span/n, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw/p; return (m<1.5?1:m<3?2:m<7?5:10)*p; }
+  function drawGraph(){
+    const [ctx, W, H] = fit(graph);
+    const ink = css('--ink'), soft = css('--ink-soft'), chg = css('--crimson'), chgT = css('--crimson-text'), grid = css('--c-grid'), rule = css('--c-rule'), F = css('--mono');
+    ctx.clearRect(0, 0, W, H);
+    const isV = st.q === 'V';
+    const L = 58, Rr = 14, T = 16, B = 38, pw = W - L - Rr, ph = H - T - B; plot = { L, pw };
+    const yLo = isV ? 0 : D0 * 1.08, yHi = isV ? Vf(0) * 1.06 : 0;
+    const Qf = isV ? Vf : Df;
+    const Xp = t => L + t / T_END * pw, Yp = v => T + (yHi - v) / (yHi - yLo) * ph;
+    ctx.font = `600 12px ${F}`; ctx.fillStyle = soft; ctx.lineWidth = 1.5;
+    const ys = niceStep(yHi - yLo, 5);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let v = Math.ceil(yLo / ys) * ys; v <= yHi + 1e-9; v += ys){ ctx.strokeStyle = grid; ctx.beginPath(); ctx.moveTo(L, Yp(v)); ctx.lineTo(L + pw, Yp(v)); ctx.stroke(); ctx.fillText(minus((+v.toFixed(2)).toString()), L - 8, Yp(v)); }
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    const axY = isV ? T + ph : T + ph;
+    for (let t = 0; t <= T_END; t += 20) ctx.fillText(t, Xp(t), axY + 8);
+    ctx.strokeStyle = rule; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(L, axY); ctx.lineTo(L + pw, axY); ctx.stroke();
+    if (!isV){ ctx.strokeStyle = rule; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(L, Yp(0)); ctx.lineTo(L + pw, Yp(0)); ctx.stroke(); }
+    ctx.textAlign = 'right'; ctx.fillText('t (days)', L + pw, axY + 22);
+    ctx.save(); ctx.translate(13, T + ph/2); ctx.rotate(-PI/2); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(isV ? 'V (m³)' : 'dV/dt (m³/day)', 0, 0); ctx.restore();
+    // curve: traced so far in ink, rest in a light rule
+    const path = (a, b) => { ctx.beginPath(); for (let i = 0; i <= 120; i++){ const t = a + (b - a) * i / 120; i ? ctx.lineTo(Xp(t), Yp(Qf(t))) : ctx.moveTo(Xp(t), Yp(Qf(t))); } ctx.stroke(); };
+    ctx.lineWidth = 4; ctx.lineCap = 'round';
+    ctx.strokeStyle = rule; path(st.t, T_END);
+    ctx.strokeStyle = ink; if (st.t > 0) path(0, st.t);
+    const t0 = st.t, v0 = Qf(t0);
+    if (isV){
+      const m = Df(t0);
+      ctx.save(); ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
+      ctx.setLineDash([9, 7]); ctx.strokeStyle = chg; ctx.lineWidth = 3;
+      const d = 24; ctx.beginPath(); ctx.moveTo(Xp(t0 - d), Yp(v0 - m*d)); ctx.lineTo(Xp(t0 + d), Yp(v0 + m*d)); ctx.stroke();
+      ctx.restore(); ctx.setLineDash([]);
+    }
+    ctx.fillStyle = chg; ctx.beginPath(); ctx.arc(Xp(t0), Yp(v0), 7, 0, 2*PI); ctx.fill();
+    ctx.fillStyle = chgT; ctx.font = `600 13px ${F}`; ctx.textBaseline = isV ? 'bottom' : 'top';
+    const lbl = isV ? `slope ${f(Df(t0), 2)} m³/day` : `dV/dt = ${f(v0, 2)}`, tx = Xp(t0) + 12;
+    ctx.textAlign = tx + 180 > L + pw ? 'right' : 'left';
+    ctx.fillText(lbl, ctx.textAlign === 'right' ? Xp(t0) - 12 : tx, Yp(v0) + (isV ? -10 : 10));
+  }
+
+  /* ---------- text ---------- */
+  function render(){
+    const t = st.t, h = Hf(t);
+    $('k6T').value = t; $('k6TOut').textContent = f(t, 1) + ' days'; $('k6Clock').textContent = `t = ${f(t, 1)} days`;
+    $('k6gH').innerHTML = `${f(h)} <small>m</small>`;
+    $('k6gR').innerHTML = `${f(Rf(t), 3)} <small>m</small>`;
+    $('k6gV').innerHTML = `${f(Vf(t), 1)} <small>m³</small>`;
+    $('k6gP').innerHTML = `${Math.round(100 * Df(t) / D0)}<small>%</small>`;
+    $('k6gD').innerHTML = `${f(Df(t), 3)} <small>m³/day</small>`;
+    $('k6GraphTitle').textContent = st.q === 'V' ? 'Volume over time' : 'dV/dt over time';
+    $('k6Lg').textContent = st.q === 'V' ? 'V(t), m³' : 'dV/dt, m³/day';
+    $('k6Lg2').style.display = st.q === 'V' ? '' : 'none';
+    $('k6Note').textContent = st.q === 'V' ? 'The volume curve is steep at the start, when the water is deep, and flattens out as the cone empties. A steeper curve means the volume is falling faster.' : 'dV/dt starts at −2π(14)²/245 ≈ −5.027 m³/day and climbs to 0 as the cone empties: the deeper the water, the more negative the rate.';
+    const hs = minus((+h.toFixed(2)).toString());
+    $('k6Insight').innerHTML = h > 0.001
+      ? `At <i>h</i> = ${hs} m the cone loses <strong>${f(-Df(t), 3)} m³ a day</strong>, ${Math.round(100 * Df(t) / D0)}% of the starting rate. The depth drops the same 0.1 m every day, but a deep cone has a much wider surface, so each 0.1 m of depth is more water.`
+      : `The vessel is dry. Near the point the surface is tiny, so the last 0.1 m of depth is almost no water: <strong>dV/dt → 0</strong>.`;
+    $('k6Steps').innerHTML = `
+      <li><span class="step-t">(a) Similar triangles tie r to h</span><span class="eq"><i>r</i>/<i>h</i> = 4/14 → <i>r</i> = (2/7)<i>h</i></span><span class="note">The water is a smaller cone with the same shape as the vessel.</span></li>
+      <li><span class="step-t">(a) Differentiate in <i>t</i></span><span class="eq"><span class="chg"><i>dr/dt</i></span> = (2/7)<i>dh/dt</i> = (2/7)(−0.1) = −1/35 ≈ −0.029 m/day</span><span class="note">Units: meters per day. The radius shrinks at a constant rate, just like h.</span></li>
+      <li><span class="step-t">(b) Write V in h alone, then differentiate</span><span class="eq"><i>V</i> = ⅓π((2/7)<i>h</i>)²<i>h</i> = (4π/147)<i>h</i>³</span><span class="eq"><i>dV/dt</i> = (4π/49)<i>h</i>² · <i>dh/dt</i> = −(2π/245)<i>h</i>²</span><span class="note">Replace r before differentiating, since r changes with h.</span></li>
+      <li><span class="step-t">(b) Small or large?</span><span class="eq">|<i>dV/dt</i>| grows with <i>h</i>²</span><span class="note">h is in the numerator, so the volume decreases faster when h is large.</span></li>
+      <li class="live"><span class="step-t">At this moment, <i>h</i> = ${hs} m</span><span class="eq">dV/dt = −(2π/245)(${hs})² ≈ ${f(Df(t), 3)} m³/day</span></li>`;
+    document.querySelectorAll('#k6Body tr').forEach(tr => tr.classList.toggle('on', Math.abs(+tr.dataset.t - t) < 10));
+  }
+  function draw(now){ drawStage(now); drawGraph(); }
+  function update(now){ render(); draw(now); }
+
+  /* ---------- answer table ---------- */
+  const times = [0, 20, 40, 60, 80, 100, 120, 140];
+  $('k6Body').innerHTML = times.map(t => `<tr data-t="${t}"><td><button class="load" data-t="${t}" aria-label="Load t = ${t} days into the simulation">${t}</button></td><td>${f(Hf(t), 0)}</td><td>${f(Rf(t), 3)}</td><td>${f(Vf(t), 1)}</td><td class="rate">${f(Df(t), 3)}</td></tr>`).join('');
+  $('k6Body').addEventListener('click', e => {
+    const b = e.target.closest('.load'); if (!b) return;
+    pause(); st.t = +b.dataset.t; update();
+    $('z6A').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  /* ---------- controls ---------- */
+  let last = 0;
+  function loop(now){
+    if (!st.playing) return;
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    st.t = Math.min(T_END, st.t + dt * st.speed);
+    if (st.t >= T_END){ st.playing = false; $('k6Play').textContent = 'Replay'; }
+    update(now); if (st.playing) requestAnimationFrame(loop);
+  }
+  function play(){ if (st.t >= T_END) st.t = 0; st.playing = true; $('k6Play').textContent = 'Pause'; last = performance.now(); requestAnimationFrame(loop); }
+  function pause(){ st.playing = false; $('k6Play').textContent = 'Play'; }
+  $('k6Play').addEventListener('click', () => st.playing ? pause() : play());
+  $('k6Reset').addEventListener('click', () => { pause(); st.t = 0; update(); });
+  $('k6T').addEventListener('input', e => { pause(); st.t = +e.target.value; update(); });
+  document.querySelectorAll('[data-sp6]').forEach(b => b.addEventListener('click', () => {
+    st.speed = +b.dataset.sp6; document.querySelectorAll('[data-sp6]').forEach(o => o.setAttribute('aria-pressed', o === b));
+  }));
+  const setQ = q => { st.q = q; $('k6qV').setAttribute('aria-pressed', q === 'V'); $('k6qR').setAttribute('aria-pressed', q === 'R'); update(); };
+  $('k6qV').addEventListener('click', () => setQ('V'));
+  $('k6qR').addEventListener('click', () => setQ('R'));
+  $('k6Form').addEventListener('submit', e => {
+    e.preventDefault();
+    const msg = $('k6Msg'), v = parseFloat($('k6HIn').value);
+    msg.classList.remove('err');
+    if (!isFinite(v) || v < 0 || v > 14){ msg.classList.add('err'); msg.textContent = 'Enter a depth from 0 to 14 meters.'; return; }
+    pause(); st.t = (H0 - v) / 0.1; update();
+    msg.textContent = `h = ${minus((+v.toFixed(2)).toString())} m happens at t = ${f(st.t, 1)} days. dV/dt there is ${f(Df(st.t), 3)} m³/day.`;
+  });
+  function scrubFrom(e){
+    if (!plot) return;
+    const rc = graph.getBoundingClientRect();
+    st.t = Math.max(0, Math.min(T_END, (e.clientX - rc.left - plot.L) / plot.pw * T_END)); update();
+  }
+  let drag = false;
+  graph.addEventListener('pointerdown', e => { pause(); drag = true; graph.setPointerCapture(e.pointerId); scrubFrom(e); });
+  graph.addEventListener('pointermove', e => { if (drag) scrubFrom(e); });
+  graph.addEventListener('pointerup', () => { drag = false; });
+
+  new ResizeObserver(() => draw()).observe(stage); new ResizeObserver(() => draw()).observe(graph);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw());
+  new MutationObserver(() => draw()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  document.fonts && document.fonts.ready.then(() => draw());
+
+  st.t = 70; update();
+  if (!reduce && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting){ io.disconnect(); setTimeout(() => { if (!st.playing){ st.t = 0; update(); play(); } }, 500); } }, { threshold: 0.4 });
+    io.observe(stage);
+  }
+})();
+</script>
+<script>
+(() => {
+  /* ---------- sheet 7: water in, water out.  E = 30 − 2t, L = 9 + t, W = 100 + 21t − 1.5t² ---------- */
+  const PI = Math.PI, T_END = 10, CAP = 200, W0 = 100, TX = 7;
+  const $ = id => document.getElementById(id);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const minus = s => s.replace(/-/g, '−');
+  const f = (n, d = 2) => minus((Math.abs(n) < 0.5 * Math.pow(10, -d) ? 0 : n).toFixed(d));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stage = $('f7Stage'), graph = $('f7Graph');
+  const st = { t: 0, playing: false, speed: 1, q: 'R' };
+  const Ef = t => 30 - 2 * t, Lf = t => 9 + t, Nf = t => Ef(t) - Lf(t), Wf = t => W0 + 21 * t - 1.5 * t * t;
+  const status = t => Math.abs(t - TX) < 0.025 ? 'not changing' : t < TX ? 'rising' : 'falling';
+
+  function fit(cv){
+    const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+    if (cv.width !== Math.round(w*dpr) || cv.height !== Math.round(h*dpr)){ cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+    const ctx = cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return [ctx, w, h];
+  }
+  function tag(ctx, text, x, y, opts = {}){
+    const size = opts.size || 13;
+    ctx.font = `600 ${size}px ${css('--mono')}`;
+    const w = ctx.measureText(text).width + 12, h = size + 9;
+    const W = ctx.canvas.clientWidth, H = ctx.canvas.clientHeight;
+    let bx = opts.align === 'left' ? x : opts.align === 'right' ? x - w : x - w/2, by = y - h/2;
+    bx = Math.max(4, Math.min(W - w - 4, bx)); by = Math.max(4, Math.min(H - h - 4, by));
+    ctx.fillStyle = css('--sheet'); ctx.globalAlpha = 0.94; ctx.fillRect(bx, by, w, h); ctx.globalAlpha = 1;
+    ctx.strokeStyle = css('--ink'); ctx.lineWidth = 1.2; ctx.strokeRect(bx + .5, by + .5, w - 1, h - 1);
+    ctx.fillStyle = opts.color || css('--ink'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, bx + w/2, by + h/2 + 0.5);
+  }
+  function stream(ctx, x0, y0, x1, y1, width, color, now){
+    ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineCap = 'butt';
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = Math.max(1, width * 0.25);
+    ctx.setLineDash([6, 10]); ctx.lineDashOffset = st.playing && !reduce ? -((now || performance.now()) / 25) % 16 : 0;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); ctx.restore();
+  }
+
+  function drawStage(now){
+    const [ctx, W, H] = fit(stage);
+    const ink = css('--ink'), soft = css('--ink-soft'), fix = css('--fixed'), chg = css('--crimson');
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = css('--sheet'); ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = css('--c-grid'); ctx.lineWidth = 1;
+    for (let x = 0; x < W; x += 24){ ctx.beginPath(); ctx.moveTo(x + .5, 0); ctx.lineTo(x + .5, H); ctx.stroke(); }
+    for (let y = 0; y < H; y += 24){ ctx.beginPath(); ctx.moveTo(0, y + .5); ctx.lineTo(W, y + .5); ctx.stroke(); }
+    const narrow = W < 520;
+    const x0 = W * 0.3, x1 = W * 0.68, ty = H * 0.24, by = H * 0.84;
+    const t = st.t, w = Wf(t), ly = by - w / CAP * (by - ty);
+    const water = css('--c-fill'), water2 = css('--c-fill-2');
+
+    // water in the tank
+    ctx.fillStyle = water; ctx.fillRect(x0, ly, x1 - x0, by - ly);
+    ctx.strokeStyle = fix; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x0, ly); ctx.lineTo(x1, ly); ctx.stroke();
+
+    // inflow pipe and stream (width shows E)
+    const px = x0 + (x1 - x0) * 0.22, py = ty - 30;
+    ctx.save(); ctx.strokeStyle = ink; ctx.lineWidth = 12; ctx.lineCap = 'butt';
+    ctx.beginPath(); ctx.moveTo(8, py); ctx.lineTo(px, py); ctx.stroke(); ctx.restore();
+    ctx.fillStyle = ink; ctx.fillRect(px - 2, py - 10, 8, 20);
+    stream(ctx, px + 10, py + 4, px + 10, ly, Ef(t) * 0.55, water2, now);
+    // leak pipe and stream (width shows L)
+    const lx = x1 + (narrow ? 34 : 54), lyp = by - 14;
+    ctx.save(); ctx.strokeStyle = ink; ctx.lineWidth = 10;
+    ctx.beginPath(); ctx.moveTo(x1, lyp); ctx.lineTo(lx, lyp); ctx.stroke(); ctx.restore();
+    stream(ctx, lx - 6, lyp + 5, lx - 6, H - 4, Lf(t) * 0.55, water2, now);
+    // floor
+    ctx.strokeStyle = soft; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, by + 1); ctx.lineTo(W, by + 1); ctx.stroke();
+
+    // tank walls
+    ctx.strokeStyle = ink; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(x0, ty); ctx.lineTo(x0, by); ctx.lineTo(x1, by); ctx.lineTo(x1, ty); ctx.stroke();
+    // gallon scale on the left wall
+    ctx.fillStyle = ink; ctx.font = `600 10.5px ${css('--mono')}`; ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.lineWidth = 1.2;
+    for (let g = 0; g <= CAP; g += 25){
+      const y = by - g / CAP * (by - ty), big = g % 50 === 0;
+      ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x0 + (big ? 10 : 6), y); ctx.stroke();
+      if (big && (!narrow || g % 100 === 0)) ctx.fillText(g, x0 - 6, y);
+    }
+    ctx.textAlign = 'right'; ctx.fillText('gal', x0 - 6, ty - 14);
+
+    // labels
+    tag(ctx, `E = ${f(Ef(t), 1)} gal/min`, narrow ? 8 : 16, py - 26, { align: 'left', color: fix, size: narrow ? 11.5 : 12.5 });
+    tag(ctx, `L = ${f(Lf(t), 1)} gal/min`, lx + 6, by + 26, { align: 'left', color: css('--crimson-text'), size: narrow ? 11.5 : 12.5 });
+    tag(ctx, `W = ${f(w, 1)} gal`, (x0 + x1) / 2 + 8, Math.min(by - 16, ly + 22), { size: 12.5 });
+    const s = status(t), arrow = s === 'rising' ? '▲ ' : s === 'falling' ? '▼ ' : '■ ';
+    tag(ctx, `${arrow}level ${s}`, W - 8, 22, { align: 'right', color: s === 'falling' ? css('--crimson-text') : s === 'rising' ? fix : ink });
+    if (!narrow) tag(ctx, `dW/dt = E − L = ${f(Nf(t), 1)}`, W - 8, 50, { align: 'right', size: 12 });
+  }
+
+  /* ---------- graph ---------- */
+  let plot = null;
+  function drawGraph(){
+    const [ctx, W, H] = fit(graph);
+    const ink = css('--ink'), soft = css('--ink-soft'), chg = css('--crimson'), chgT = css('--crimson-text'), fix = css('--fixed'), grid = css('--c-grid'), rule = css('--c-rule'), F = css('--mono');
+    ctx.clearRect(0, 0, W, H);
+    const isR = st.q === 'R';
+    const L = 52, Rr = 14, T = 16, B = 38, pw = W - L - Rr, ph = H - T - B; plot = { L, pw };
+    const yHi = isR ? 32 : 200, ys = isR ? 5 : 25;
+    const Xp = t => L + t / T_END * pw, Yp = v => T + ph - v / yHi * ph;
+    ctx.font = `600 12px ${F}`; ctx.fillStyle = soft; ctx.lineWidth = 1.5;
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let v = 0; v <= yHi; v += ys){ ctx.strokeStyle = grid; ctx.beginPath(); ctx.moveTo(L, Yp(v)); ctx.lineTo(L + pw, Yp(v)); ctx.stroke(); ctx.fillText(v, L - 8, Yp(v)); }
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let t = 0; t <= T_END; t++) ctx.fillText(t, Xp(t), T + ph + 8);
+    ctx.strokeStyle = rule; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(L, T + ph); ctx.lineTo(L + pw, T + ph); ctx.stroke();
+    ctx.textAlign = 'right'; ctx.fillText('t (min)', L + pw, T + ph + 22);
+    ctx.save(); ctx.translate(12, T + ph/2); ctx.rotate(-PI/2); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(isR ? 'gal/min' : 'W (gal)', 0, 0); ctx.restore();
+    // t = 7 guide
+    ctx.save(); ctx.setLineDash([4, 4]); ctx.strokeStyle = soft; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(Xp(TX), T); ctx.lineTo(Xp(TX), T + ph); ctx.stroke(); ctx.restore();
+    const t0 = st.t;
+    if (isR){
+      // shade the gap: rising where E > L, falling where L > E
+      const band = (a, b, color) => { ctx.fillStyle = color; ctx.beginPath();
+        for (let i = 0; i <= 40; i++){ const t = a + (b - a) * i / 40; i ? ctx.lineTo(Xp(t), Yp(Ef(t))) : ctx.moveTo(Xp(t), Yp(Ef(t))); }
+        for (let i = 40; i >= 0; i--){ const t = a + (b - a) * i / 40; ctx.lineTo(Xp(t), Yp(Lf(t))); }
+        ctx.closePath(); ctx.fill(); };
+      band(0, TX, css('--c-fill')); band(TX, T_END, css('--hl'));
+      ctx.lineWidth = 3.5; ctx.lineCap = 'round';
+      ctx.strokeStyle = fix; ctx.beginPath(); ctx.moveTo(Xp(0), Yp(Ef(0))); ctx.lineTo(Xp(T_END), Yp(Ef(T_END))); ctx.stroke();
+      ctx.strokeStyle = chg; ctx.beginPath(); ctx.moveTo(Xp(0), Yp(Lf(0))); ctx.lineTo(Xp(T_END), Yp(Lf(T_END))); ctx.stroke();
+      ctx.font = `600 12px ${F}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+      ctx.fillStyle = ink; ctx.fillText('rising', Xp(2.6), Yp((Ef(2.6) + Lf(2.6)) / 2));
+      if (pw > 300){ ctx.fillText('falling', Xp(9.1), Yp((Ef(9.1) + Lf(9.1)) / 2)); }
+      tag(ctx, 'E(7) = L(7) = 16', Xp(TX), T + 12, { size: 11.5 });
+      // current time
+      ctx.strokeStyle = ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(Xp(t0), Yp(Ef(t0))); ctx.lineTo(Xp(t0), Yp(Lf(t0))); ctx.stroke();
+      ctx.fillStyle = fix; ctx.beginPath(); ctx.arc(Xp(t0), Yp(Ef(t0)), 6.5, 0, 2*PI); ctx.fill();
+      ctx.fillStyle = chg; ctx.beginPath(); ctx.arc(Xp(t0), Yp(Lf(t0)), 6.5, 0, 2*PI); ctx.fill();
+    } else {
+      const path = (a, b) => { ctx.beginPath(); for (let i = 0; i <= 80; i++){ const t = a + (b - a) * i / 80; i ? ctx.lineTo(Xp(t), Yp(Wf(t))) : ctx.moveTo(Xp(t), Yp(Wf(t))); } ctx.stroke(); };
+      ctx.lineWidth = 4; ctx.lineCap = 'round';
+      ctx.strokeStyle = rule; path(t0, T_END);
+      ctx.strokeStyle = ink; if (t0 > 0) path(0, t0);
+      tag(ctx, `most water: ${f(Wf(TX), 1)} gal at t = 7`, Xp(TX), Yp(Wf(TX)) - 22, { size: 11.5 });
+      const v0 = Wf(t0), m = Nf(t0), d = 1.4;
+      ctx.save(); ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
+      ctx.setLineDash([9, 7]); ctx.strokeStyle = chg; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(Xp(t0 - d), Yp(v0 - m*d)); ctx.lineTo(Xp(t0 + d), Yp(v0 + m*d)); ctx.stroke();
+      ctx.restore(); ctx.setLineDash([]);
+      ctx.fillStyle = chg; ctx.beginPath(); ctx.arc(Xp(t0), Yp(v0), 7, 0, 2*PI); ctx.fill();
+      ctx.fillStyle = chgT; ctx.font = `600 13px ${F}`; ctx.textBaseline = 'top';
+      const lbl = `slope = E − L = ${f(m, 1)}`, tx = Xp(t0) + 12;
+      ctx.textAlign = tx + 200 > L + pw ? 'right' : 'left';
+      ctx.fillText(lbl, ctx.textAlign === 'right' ? Xp(t0) - 12 : tx, Yp(v0) + 22);
+    }
+  }
+
+  /* ---------- text ---------- */
+  function render(){
+    const t = st.t, s = status(t), n = Nf(t);
+    $('f7T').value = t; $('f7TOut').textContent = f(t, 1) + ' min'; $('f7Clock').textContent = `t = ${f(t, 1)} min`;
+    $('f7gE').innerHTML = `${f(Ef(t), 1)} <small>gal/min</small>`;
+    $('f7gL').innerHTML = `${f(Lf(t), 1)} <small>gal/min</small>`;
+    $('f7gW').innerHTML = `${f(Wf(t), 1)} <small>gal</small>`;
+    $('f7gS').innerHTML = s;
+    $('f7gD').innerHTML = `${f(s === 'not changing' ? 0 : n, 1)} <small>gal/min</small>`;
+    const isR = st.q === 'R';
+    $('f7GraphTitle').textContent = isR ? 'Rate in and rate out' : 'Water in the tank';
+    $('f7Legend').innerHTML = isR
+      ? '<span style="--c:var(--fixed)">E(t), rate in</span><span style="--c:var(--crimson)">L(t), rate out</span>'
+      : '<span style="--c:var(--ink)">W(t), gallons</span><span class="dash" style="--c:var(--crimson)">Tangent: slope = E − L</span>';
+    $('f7Note').textContent = isR
+      ? 'The gap between the lines is the net rate. Blue shading: more coming in than going out. Orange: more going out. The lines cross at t = 7.'
+      : 'The tank fills while E > L and drains once L > E. Its tangent is flat at t = 7, the top of the curve.';
+    $('f7Insight').innerHTML = s === 'rising'
+      ? `Water comes in ${f(Ef(t), 1)} gal/min and leaks out ${f(Lf(t), 1)} gal/min, so the tank gains <strong>${f(n, 1)} gal each minute</strong>. The level is rising.`
+      : s === 'falling'
+      ? `Water comes in ${f(Ef(t), 1)} gal/min but leaks out ${f(Lf(t), 1)} gal/min, so the tank loses <strong>${f(-n, 1)} gal each minute</strong>. The level is falling.`
+      : `In and out are both 16 gal/min, so <strong>dW/dt = 0</strong>. For this instant the level is not changing. It was rising just before and falls just after.`;
+    const hl = k => (k === 'a' && s === 'rising') || (k === 'b' && s === 'falling') || (k === 'c' && s === 'not changing') ? ' class="live"' : '';
+    $('f7Steps').innerHTML = `
+      <li${hl('a')}><span class="step-t">(a) For 0 ≤ <i>t</i> &lt; 7, <i>E</i>(<i>t</i>) &gt; <i>L</i>(<i>t</i>)</span><span class="eq"><i>dW/dt</i> = <i>E</i> − <i>L</i> &gt; 0</span><span class="note">The water level is rising, since the rate water flows in is greater than the rate it leaks out.</span></li>
+      <li${hl('b')}><span class="step-t">(b) For 7 &lt; <i>t</i> ≤ 10, <i>L</i>(<i>t</i>) &gt; <i>E</i>(<i>t</i>)</span><span class="eq"><i>dW/dt</i> = <i>E</i> − <i>L</i> &lt; 0</span><span class="note">The water level is falling, since the rate water leaks out is greater than the rate it flows in.</span></li>
+      <li${hl('c')}><span class="step-t">(c) At <i>t</i> = 7, <i>E</i>(7) = <i>L</i>(7)</span><span class="eq"><i>dW/dt</i> = 0</span><span class="note">The water level is not changing at that instant. Because it goes from rising to falling, the tank holds the most water at t = 7.</span></li>
+      <li><span class="step-t">Right now, <i>t</i> = ${f(t, 2)} min</span><span class="eq">E − L = ${f(Ef(t), 2)} − ${f(Lf(t), 2)} = ${f(n, 2)} gal/min</span><span class="note">Level ${s}.</span></li>`;
+    document.querySelectorAll('#f7Body tr').forEach(tr => tr.classList.toggle('on', Math.abs(+tr.dataset.t - t) < 0.5));
+  }
+  function draw(now){ drawStage(now); drawGraph(); }
+  function update(now){ render(); draw(now); }
+
+  /* ---------- answer table ---------- */
+  const times = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  $('f7Body').innerHTML = times.map(t => `<tr data-t="${t}"><td><button class="load" data-t="${t}" aria-label="Load t = ${t} minutes into the simulation">${t}</button></td><td>${Ef(t)}</td><td>${Lf(t)}</td><td class="rate">${minus(String(Nf(t)))}</td><td>${status(t)}</td></tr>`).join('');
+  $('f7Body').addEventListener('click', e => {
+    const b = e.target.closest('.load'); if (!b) return;
+    pause(); st.t = +b.dataset.t; update();
+    $('z7A').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  /* ---------- controls ---------- */
+  let last = 0;
+  function loop(now){
+    if (!st.playing) return;
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    st.t = Math.min(T_END, st.t + dt * st.speed);
+    if (st.t >= T_END){ st.playing = false; $('f7Play').textContent = 'Replay'; }
+    update(now); if (st.playing) requestAnimationFrame(loop);
+  }
+  function play(){ if (st.t >= T_END) st.t = 0; st.playing = true; $('f7Play').textContent = 'Pause'; last = performance.now(); requestAnimationFrame(loop); }
+  function pause(){ st.playing = false; $('f7Play').textContent = 'Play'; }
+  $('f7Play').addEventListener('click', () => st.playing ? pause() : play());
+  $('f7Reset').addEventListener('click', () => { pause(); st.t = 0; update(); });
+  $('f7T').addEventListener('input', e => { pause(); st.t = +e.target.value; update(); });
+  document.querySelectorAll('[data-sp7]').forEach(b => b.addEventListener('click', () => {
+    st.speed = +b.dataset.sp7; document.querySelectorAll('[data-sp7]').forEach(o => o.setAttribute('aria-pressed', o === b));
+  }));
+  const setQ = q => { st.q = q; $('f7qR').setAttribute('aria-pressed', q === 'R'); $('f7qW').setAttribute('aria-pressed', q === 'W'); update(); };
+  $('f7qR').addEventListener('click', () => setQ('R'));
+  $('f7qW').addEventListener('click', () => setQ('W'));
+  $('f7Form').addEventListener('submit', e => {
+    e.preventDefault();
+    const msg = $('f7Msg'), v = parseFloat($('f7TIn').value);
+    msg.classList.remove('err');
+    if (!isFinite(v) || v < 0 || v > 10){ msg.classList.add('err'); msg.textContent = 'Enter a time from 0 to 10 minutes.'; return; }
+    pause(); st.t = v; update();
+    msg.textContent = `At t = ${minus((+v.toFixed(2)).toString())} min, E − L = ${f(Nf(v), 2)} gal/min, so the level is ${status(v)}.`;
+  });
+  function scrubFrom(e){
+    if (!plot) return;
+    const rc = graph.getBoundingClientRect();
+    let t = Math.max(0, Math.min(T_END, (e.clientX - rc.left - plot.L) / plot.pw * T_END));
+    if (Math.abs(t - TX) < 0.12) t = TX; // snap onto the crossing
+    st.t = t; update();
+  }
+  let drag = false;
+  graph.addEventListener('pointerdown', e => { pause(); drag = true; graph.setPointerCapture(e.pointerId); scrubFrom(e); });
+  graph.addEventListener('pointermove', e => { if (drag) scrubFrom(e); });
+  graph.addEventListener('pointerup', () => { drag = false; });
+
+  new ResizeObserver(() => draw()).observe(stage); new ResizeObserver(() => draw()).observe(graph);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw());
+  new MutationObserver(() => draw()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  document.fonts && document.fonts.ready.then(() => draw());
+
+  st.t = 3; update();
   if (!reduce && 'IntersectionObserver' in window){
     const io = new IntersectionObserver(es => { if (es[0].isIntersecting){ io.disconnect(); setTimeout(() => { if (!st.playing){ st.t = 0; update(); play(); } }, 500); } }, { threshold: 0.4 });
     io.observe(stage);

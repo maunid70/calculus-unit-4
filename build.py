@@ -16,7 +16,7 @@ DAYS = [
     dict(date="2026-10-28", wd="Wed", n="28", mo="Oct", t="context",
          titles=["Day 1: Interpreting Derivatives in Context", "Day 3: Rates of Change in Other Contexts"],
          topic="Units, the sentence template, rate in vs. rate out",
-         slides="1g9NOh6Jriw_cf0Ld57_pX-kdgXamCdJXoLYCeWOZOrc", notes=["day1", "day3"],
+         slides="1g9NOh6Jriw_cf0Ld57_pX-kdgXamCdJXoLYCeWOZOrc", notes=["day1", "day3"], lab=("sheet7", "Water in, water out lab"),
          hw=[("d1", "Day 1 HW", 58322485, 58894026), ("d3", "Day 3 HW", 58322493, 58894031)]),
     dict(date="2026-10-29", wd="Thu", n="29", mo="Oct", t="rates",
          titles=["Day 4: Intro to Related Rates"], topic="The five steps; constants go in before you differentiate",
