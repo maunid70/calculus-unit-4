@@ -1,0 +1,2056 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Shrinking Cylinder Rates</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: one engineering drawing sheet on graph paper. Title block, then a 12-column workspace of lettered zones:
+   A simulation | B readout + C solution; D graph | E answer table; F method. Footer strip closes the sheet. */
+:root{
+  --paper:#f4f5f1; --sheet:#fbfbf9; --grid-minor:#e4e7df; --grid-major:#d3d8cc;
+  --ink:#1c2a3a; --ink-soft:#4a5765; --rule:#c4cabf; --rule-strong:#1c2a3a;
+  --crimson:#d9631e; --crimson-text:#a8470b;      /* changing: dr/dt, slopes, shed wall */
+  --fixed:#2f6f8f;                                 /* fixed: h */
+  --c-fill:#cfe0e8; --c-fill-2:#a9c6d4; --c-rule:#bcc3b8; --c-grid:#e6e9e2;
+  --inst:#fbfbf9; --inst-2:#e9ece4; --inst-ink:#1c2a3a; --inst-soft:#4a5765; --inst-chg:#a8470b; --inst-fix:#2f6f8f; --inst-hot:#fbe6d6;
+  --tone:#eceee8; --hl:#fbe6d6;
+  --font:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --gutter:clamp(16px,2.4vw,28px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#11171d; --sheet:#161e26; --grid-minor:#1b242d; --grid-major:#24303b;
+  --ink:#e4eaef; --ink-soft:#a3b2bf; --rule:#2f3c48; --rule-strong:#8ea0b0;
+  --crimson:#f08a44; --crimson-text:#f5a56c; --fixed:#6fb3d4;
+  --c-fill:#21414f; --c-fill-2:#2c5a6d; --c-rule:#3a4855; --c-grid:#1f2a33;
+  --inst:#161e26; --inst-2:#26323d; --inst-ink:#e4eaef; --inst-soft:#a3b2bf; --inst-chg:#f5a56c; --inst-fix:#6fb3d4; --inst-hot:#3a2616;
+  --tone:#1d2730; --hl:#3a2616;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#11171d; --sheet:#161e26; --grid-minor:#1b242d; --grid-major:#24303b;
+  --ink:#e4eaef; --ink-soft:#a3b2bf; --rule:#2f3c48; --rule-strong:#8ea0b0;
+  --crimson:#f08a44; --crimson-text:#f5a56c; --fixed:#6fb3d4;
+  --c-fill:#21414f; --c-fill-2:#2c5a6d; --c-rule:#3a4855; --c-grid:#1f2a33;
+  --inst:#161e26; --inst-2:#26323d; --inst-ink:#e4eaef; --inst-soft:#a3b2bf; --inst-chg:#f5a56c; --inst-fix:#6fb3d4; --inst-hot:#3a2616;
+  --tone:#1d2730; --hl:#3a2616;
+  color-scheme:dark }
+*{box-sizing:border-box}
+::selection{background:var(--crimson);color:#fff}
+html{scroll-behavior:smooth}
+body{
+  background-color:var(--paper);color:var(--ink);
+  background-image:
+    linear-gradient(var(--grid-major) 1px,transparent 1px),linear-gradient(90deg,var(--grid-major) 1px,transparent 1px),
+    linear-gradient(var(--grid-minor) 1px,transparent 1px),linear-gradient(90deg,var(--grid-minor) 1px,transparent 1px);
+  background-size:120px 120px,120px 120px,24px 24px,24px 24px;
+  font-family:var(--font);font-size:16px;line-height:1.55;font-variant-numeric:tabular-nums;
+  padding-left:max(var(--gutter), env(safe-area-inset-left, 0px));
+  padding-right:max(var(--gutter), env(safe-area-inset-right, 0px));
+  padding-block:24px 40px;
+}
+.sheet{max-width:1200px;margin:0 auto;display:grid;gap:16px}
+h1,h2,h3{margin:0;text-wrap:balance;letter-spacing:-0.01em;line-height:1.2;font-weight:600}
+h1,.h1-2{font-size:clamp(1.5rem,1.15rem + 1.4vw,2.125rem)}
+.zone-meta{font:500 13px var(--mono);color:var(--ink-soft)}
+#c2Stage{aspect-ratio:16/10;border:1px solid var(--rule)}
+#c2Graph{aspect-ratio:16/10;cursor:crosshair;touch-action:none}
+.ans tr.book td{font-weight:600}
+#sheet2,#sheet3,#sheet4,#sheet5{margin-top:32px;scroll-margin-top:16px}
+#r5Stage{aspect-ratio:16/7;border:1px solid var(--rule)}
+#r5Graph{aspect-ratio:16/11;cursor:crosshair;touch-action:none}
+.pun-wrap{display:grid;gap:8px}
+.pun-t{font-weight:600;font-size:14px}
+table.pun{width:100%;border-collapse:collapse;table-layout:fixed}
+.pun th{font:600 13px var(--mono);padding:8px 6px;text-align:center;vertical-align:middle;color:var(--ink)}
+.pun th span{display:block;font:400 12px var(--font);color:var(--crimson-text);margin-top:2px}
+.pun thead td{width:27%}
+.pun tbody td{border:1.5px solid var(--rule-strong);padding:0;height:62px}
+.pun .cell{all:unset;box-sizing:border-box;display:grid;place-items:center;text-align:center;width:100%;height:100%;padding:8px;cursor:pointer;font:600 14.5px/1.25 var(--font);color:var(--ink);background:var(--sheet);transition:background-color .15s}
+.pun .cell:hover{background:var(--tone)}
+.pun .cell:focus-visible{outline:2px solid var(--crimson);outline-offset:-4px}
+.pun .cell.picked{box-shadow:inset 0 0 0 2px var(--ink-soft)}
+.pun .cell.on{background:var(--hl);color:var(--crimson-text);box-shadow:inset 0 0 0 3px var(--crimson)}
+#r5T{width:100%;border:0;padding:0;background:none}
+.r5say{font-family:var(--font)!important;font-weight:700!important;font-size:clamp(1.25rem,1.05rem + .8vw,1.6rem)!important}
+table.rules th{text-align:left;font:600 13px var(--mono);color:var(--ink);padding:0 12px 0 16px;border-bottom:1px solid var(--rule);height:38px;white-space:nowrap}
+table.rules td{text-align:left;font:14px var(--font);white-space:normal}
+#w4Stage{aspect-ratio:16/10;border:1px solid var(--rule)}
+#w4Graph{aspect-ratio:16/10;cursor:crosshair;touch-action:none}
+#b3Stage{aspect-ratio:16/10;border:1px solid var(--rule)}
+#b3Graph{aspect-ratio:16/10;cursor:crosshair;touch-action:none}
+h2{font-size:1rem}
+p{margin:0}
+a{color:inherit;text-underline-offset:0.2em}
+i.v{font-style:italic}
+output{font-family:var(--mono)}
+button,input{font-family:var(--font)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--crimson);outline-offset:2px}
+
+/* buttons */
+.btn{font:500 14px/1 var(--font);color:var(--ink);background:var(--sheet);border:1.5px solid var(--ink);border-radius:2px;padding:8px 14px;cursor:pointer;text-decoration:none;display:inline-block;transition:background-color .12s,color .12s,transform .12s}
+.btn:hover{background:var(--tone)}
+.btn:active{transform:translateY(1px)}
+.btn.primary,.btn[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.seg{display:inline-flex}
+.seg .btn{border-radius:0;margin-left:-1.5px;font-family:var(--mono);font-size:13px;padding:8px 11px}
+.seg .btn:first-child{margin-left:0}
+
+/* top strip + title block */
+.strip{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font:500 13px var(--mono);color:var(--ink-soft)}
+.strip nav{display:flex;gap:16px;flex-wrap:wrap}
+.strip a{text-decoration:none} .strip a:hover{text-decoration:underline}
+.titleblock{background:var(--sheet);border:1.5px solid var(--rule-strong);display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.tb-main{padding:20px 22px;display:grid;gap:10px;align-content:start;border-right:1.5px solid var(--rule-strong);min-width:0}
+.tb-main p{max-width:62ch}
+.tb-specs{margin:0;display:grid}
+.tb-specs div{display:grid;grid-template-columns:6.5em minmax(0,1fr);gap:10px;padding:9px 16px;border-bottom:1px solid var(--rule);align-items:baseline}
+.tb-specs div:last-child{border-bottom:0}
+.tb-specs dt{font:500 12.5px var(--mono);color:var(--ink-soft)}
+.tb-specs dd{margin:0;font:500 15px var(--mono)}
+
+/* zones */
+.ws{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;align-items:start}
+.col-7{grid-column:span 7;min-width:0;display:grid;gap:16px}
+.col-5{grid-column:span 5;min-width:0;display:grid;gap:16px}
+.col-12{grid-column:1/-1;min-width:0}
+.zone{background:var(--sheet);border:1px solid var(--rule);min-width:0}
+.zone-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--rule)}
+.zone-h h2{display:flex;align-items:center;gap:10px}
+.zid{font:600 12px var(--mono);width:22px;height:22px;display:grid;place-items:center;background:var(--ink);color:var(--sheet)}
+.zone-b{padding:16px;display:grid;gap:14px;min-width:0}
+.zone.inst{background:var(--inst);color:var(--inst-ink)}
+canvas{display:block;width:100%;max-width:100%}
+#stage{aspect-ratio:16/10}
+#graph{aspect-ratio:16/10;cursor:crosshair;touch-action:none}
+
+/* controls, grouped */
+.ctrl{display:grid;grid-template-columns:auto minmax(0,1fr);border-top:1px solid var(--rule)}
+.ctrl > .cg{padding:12px 16px;display:grid;gap:10px;align-content:start;min-width:0}
+.ctrl > .cg + .cg{border-left:1px solid var(--rule)}
+.cg-t{font:500 12px var(--mono);color:var(--ink-soft)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.scrub{display:grid;grid-template-columns:6.5em minmax(0,1fr) 4.8em;gap:10px;align-items:center}
+.scrub output{font-size:14px;text-align:right}
+label{font-size:13.5px;color:var(--ink-soft)}
+input[type=range]{width:100%;accent-color:var(--crimson)}
+.solve{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 16px;border-top:1px solid var(--rule);background:var(--paper)}
+.solve label{font-size:14px;color:var(--ink);font-weight:500}
+.solve input{width:84px;font:500 15px var(--mono);color:var(--ink);background:var(--sheet);border:1.5px solid var(--ink);border-radius:2px;padding:6px 8px}
+.solve .msg{flex-basis:100%;font-size:13.5px;color:var(--ink-soft);min-height:1.3em}
+.solve .msg.err{color:var(--crimson-text)}
+
+/* readout */
+.gauges{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--inst-2);border:1px solid var(--inst-2)}
+.g{display:grid;gap:2px;min-width:0;background:var(--inst);padding:10px 12px}
+.g .k{font:500 12px var(--mono);color:var(--inst-soft)}
+.g .v{font:500 clamp(1.2rem,1rem + 0.6vw,1.5rem) var(--mono);line-height:1.15;overflow-wrap:anywhere}
+.g .v small{font-size:12px;color:var(--inst-soft)}
+.g.change .v{color:var(--inst-chg)} .g.fixed .v{color:var(--inst-fix)}
+.g.hot{grid-column:1/-1;background:var(--inst-hot);border-left:3px solid var(--crimson)}
+.g.hot .v{font-size:clamp(1.7rem,1.3rem + 1.4vw,2.4rem);color:var(--inst-chg);font-weight:600}
+.insight{color:var(--inst-ink);font-size:14px;line-height:1.55}
+.insight strong{font-weight:600;color:var(--inst-chg)}
+
+/* solution */
+ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:12px;counter-reset:s}
+ol.steps li{display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:10px;row-gap:3px;counter-increment:s;min-width:0}
+ol.steps li > *{grid-column:2}
+ol.steps li::before{content:counter(s);grid-row:1/span 3;grid-column:1;font:500 12px var(--mono);width:24px;height:24px;display:grid;place-items:center;border:1.5px solid var(--ink);border-radius:50%}
+.step-t{font-weight:600;font-size:14px}
+.eq{font:500 15px var(--mono);overflow-wrap:anywhere}
+.eq i{font-family:var(--font);font-style:italic}
+.chg{color:var(--crimson-text)} .fix{color:var(--fixed)}
+.note{font-size:13.5px;color:var(--ink-soft)}
+ol.steps li.live{background:var(--paper);border:1.5px solid var(--crimson);padding:10px 12px 10px 8px}
+ol.steps li.live::before{border-color:var(--crimson);color:var(--crimson-text)}
+ol.steps li.live .eq{color:var(--crimson-text);font-weight:600}
+
+/* graph */
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--ink-soft)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend span::before{content:"";width:20px;border-top:2.5px solid var(--c)}
+.legend span.dash::before{border-top-style:dashed}
+
+/* answer table */
+.tbl-wrap{overflow-x:auto}
+table.ans{width:100%;border-collapse:collapse;font:500 14px var(--mono)}
+.ans caption{caption-side:bottom;text-align:left;font:13px var(--font);color:var(--ink-soft);padding:10px 16px 14px}
+.ans th{font:500 12px var(--mono);color:var(--ink-soft);text-align:right;padding:8px 12px;border-bottom:1.5px solid var(--rule-strong);white-space:nowrap}
+.ans td{text-align:right;padding:0 12px;border-bottom:1px solid var(--rule);height:40px;white-space:nowrap}
+.ans th:first-child,.ans td:first-child{text-align:left;padding-left:16px}
+.ans td.rate{color:var(--crimson-text);font-weight:600}
+.ans td.barc{width:28%;padding-right:16px}
+.bar{display:block;height:10px;background:var(--crimson);width:var(--w);margin-left:auto}
+.ans tr.on td{background:var(--hl)}
+.ans .load{all:unset;cursor:pointer;font:600 14px var(--mono);color:var(--ink);text-decoration:underline;text-underline-offset:0.2em}
+.ans .load:focus-visible{outline:2px solid var(--crimson);outline-offset:2px}
+
+/* method */
+.stairs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.stair{display:grid;gap:6px;align-content:start;padding:16px;border-right:1px solid var(--rule);min-width:0}
+.stair:last-child{border-right:0}
+.stair .tag{font:500 12px var(--mono);color:var(--ink-soft)}
+.stair .line{font-weight:600;font-size:16px}
+.stair p{font-size:14px;color:var(--ink-soft)}
+.stair .eqm{font:500 14px var(--mono);color:var(--ink)}
+
+/* footer strip */
+.foot{display:grid;grid-template-columns:minmax(0,1fr) auto auto;border:1.5px solid var(--rule-strong);background:var(--sheet);font:500 12.5px var(--mono);color:var(--ink-soft)}
+.foot > *{padding:10px 16px;min-width:0}
+.foot > * + *{border-left:1px solid var(--rule)}
+
+@media (max-width:980px){
+  .col-7,.col-5{grid-column:1/-1}
+  .stairs{grid-template-columns:1fr 1fr} .stair:nth-child(2){border-right:0} .stair:nth-child(-n+2){border-bottom:1px solid var(--rule)}
+}
+@media (max-width:640px){
+  .titleblock{grid-template-columns:1fr} .tb-main{border-right:0;border-bottom:1.5px solid var(--rule-strong)}
+  .ctrl{grid-template-columns:1fr} .ctrl > .cg + .cg{border-left:0;border-top:1px solid var(--rule)}
+  .foot{grid-template-columns:1fr} .foot > * + *{border-left:0;border-top:1px solid var(--rule)}
+  .ans td.barc,.ans th.barc{display:none}
+}
+@media (max-width:480px){ .stairs{grid-template-columns:1fr} .stair{border-right:0;border-bottom:1px solid var(--rule)} .stair:last-child{border-bottom:0} .scrub{grid-template-columns:6em minmax(0,1fr) 4.4em} }
+
+/* motion */
+.js .rise{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s cubic-bezier(.16,1,.3,1);transition-delay:calc(var(--i,0) * 60ms)}
+.js .rise.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .js .rise{transform:none!important;transition:opacity .2s linear!important}
+  .btn{transition:none}
+}
+</style>
+
+<div class="sheet" id="top">
+  <p style="margin:0"><a href="../index.html" style="font:600 15px var(--font);color:var(--ink)">Back to Unit 4 home</a></p>
+  <div class="strip">
+    <span>Calculus · 5 sheets</span>
+    <nav aria-label="Zones">
+      <a href="#top">Sheet 1: Shrinking cylinder</a><a href="#sheet2">Sheet 2: Two cars</a><a href="#sheet3">Sheet 3: Soap bubble</a><a href="#sheet4">Sheet 4: Draining tank</a><a href="#sheet5">Sheet 5: Velocity Raptor</a>
+    </nav>
+  </div>
+
+  <header class="titleblock rise">
+    <div class="tb-main">
+      <h1>Related rates: a shrinking cylinder</h1>
+      <p>Let <i class="v">r</i> be the radius and <i class="v">h</i> the height of a cylinder, both in inches, and <i class="v">t</i> the time in seconds. The height stays constant at 7 inches while the radius decreases at 3 inches per second.</p>
+    </div>
+    <dl class="tb-specs">
+      <div><dt>Given</dt><dd class="fix">h = 7 in, dh/dt = 0</dd></div>
+      <div><dt>Given</dt><dd class="chg">dr/dt = −3 in/s</dd></div>
+      <div><dt>Model</dt><dd>V = πr²h, S = 2πr² + 2πrh</dd></div>
+      <div><dt>Find</dt><dd>dV/dt and dS/dt at any r</dd></div>
+    </dl>
+  </header>
+
+  <main class="ws">
+    <div class="col-7">
+      <section class="zone rise" id="zA" aria-labelledby="hA">
+        <div class="zone-h">
+          <h2 id="hA"><span class="zid" aria-hidden="true">A</span>Simulation</h2>
+          <div class="seg" role="group" aria-label="Quantity to track">
+            <button class="btn" id="qV" aria-pressed="true">Volume</button>
+            <button class="btn" id="qS" aria-pressed="false">Surface area</button>
+          </div>
+        </div>
+        <div class="zone-b"><canvas id="stage" aria-label="Animated cylinder whose radius shrinks while its height stays 7 inches"></canvas></div>
+        <div class="ctrl">
+          <div class="cg">
+            <span class="cg-t">Playback</span>
+            <div class="row">
+              <button class="btn primary" id="play">Play</button>
+              <button class="btn" id="reset">Reset</button>
+            </div>
+            <div class="seg" role="group" aria-label="Playback speed">
+              <button class="btn" data-sp="0.1" aria-pressed="false">0.1×</button>
+              <button class="btn" data-sp="0.2" aria-pressed="true">0.2×</button>
+              <button class="btn" data-sp="0.5" aria-pressed="false">0.5×</button>
+              <button class="btn" data-sp="1" aria-pressed="false">1×</button>
+            </div>
+          </div>
+          <div class="cg">
+            <span class="cg-t">Inputs</span>
+            <div class="scrub"><label for="t">Time</label><input type="range" id="t" min="0" max="4" step="0.01" value="0"><output id="tOut" for="t">0.00 s</output></div>
+            <div class="scrub"><label for="r0">Start radius</label><input type="range" id="r0" min="4" max="15" step="1" value="12"><output id="r0Out" for="r0">12 in</output></div>
+          </div>
+        </div>
+        <form class="solve" id="solveForm" novalidate>
+          <label for="rIn">Solve at <i class="v">r</i> =</label>
+          <input type="number" id="rIn" inputmode="decimal" min="0" max="15" step="any" placeholder="5" aria-describedby="solveMsg">
+          <span>in</span>
+          <button class="btn primary" type="submit">Jump there</button>
+          <span class="msg" id="solveMsg" role="status"></span>
+        </form>
+      </section>
+
+      <section class="zone rise" id="zD" aria-labelledby="graphTitleH">
+        <div class="zone-h"><h2 id="graphTitleH"><span class="zid" aria-hidden="true">D</span><span id="graphTitle">Volume over time</span></h2></div>
+        <div class="zone-b">
+          <canvas id="graph" aria-label="Graph of the quantity over time with its tangent line"></canvas>
+          <div class="legend">
+            <span style="--c:var(--ink)" id="lgCurve">V(t)</span>
+            <span class="dash" style="--c:var(--crimson)">Tangent: slope = rate right now</span>
+          </div>
+          <p class="note">Drag across the graph to scrub time. The tangent flattens as r shrinks, even though dr/dt never changes.</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-5">
+      <section class="zone inst rise" style="--i:1" aria-labelledby="hB">
+        <div class="zone-h"><h2 id="hB"><span class="zid" aria-hidden="true">B</span>Readout</h2></div>
+        <div class="zone-b">
+          <div class="gauges">
+            <div class="g"><span class="v" id="gT"></span><span class="k">Time t</span></div>
+            <div class="g"><span class="v" id="gR"></span><span class="k">Radius r</span></div>
+            <div class="g change"><span class="v">−3 <small>in/s</small></span><span class="k">dr/dt, constant</span></div>
+            <div class="g fixed"><span class="v">7 <small>in</small></span><span class="k">Height h, fixed</span></div>
+            <div class="g" style="grid-column:1/-1"><span class="v" id="gQ"></span><span class="k" id="kQ">V = 7πr²</span></div>
+            <div class="g hot"><span class="v" id="gD"></span><span class="k" id="kD">dV/dt = −42πr</span></div>
+          </div>
+          <p class="insight" id="insight"></p>
+        </div>
+      </section>
+
+      <section class="zone rise" style="--i:2" aria-labelledby="hC">
+        <div class="zone-h"><h2 id="hC"><span class="zid" aria-hidden="true">C</span>Worked solution</h2></div>
+        <div class="zone-b"><ol class="steps" id="steps"></ol></div>
+      </section>
+
+      <section class="zone rise" style="--i:3" id="zE" aria-labelledby="hE">
+        <div class="zone-h"><h2 id="hE"><span class="zid" aria-hidden="true">E</span>Answer table, start r = 12 in</h2></div>
+        <div class="tbl-wrap">
+          <table class="ans">
+            <caption>Half the radius, half the rate. Select an r to load that instant into zone A.</caption>
+            <thead><tr><th scope="col">r (in)</th><th scope="col">t (s)</th><th scope="col">dV/dt (in³/s)</th><th scope="col" class="barc">|rate|</th></tr></thead>
+            <tbody id="ansBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <section class="zone col-12 rise" id="zF" aria-labelledby="hF">
+      <div class="zone-h"><h2 id="hF"><span class="zid" aria-hidden="true">F</span>Method</h2></div>
+      <div class="stairs">
+        <div class="stair"><span class="tag">Step 1</span><p class="line">Write the model.</p><span class="eqm">V = πr²h</span><p>Volume ties radius and height together. Every rate on this sheet comes from it.</p></div>
+        <div class="stair"><span class="tag">Step 2</span><p class="line">Fix the constant.</p><span class="eqm">V = 7πr²</span><p>h never changes, so it goes in before differentiating. r can’t: it is still moving.</p></div>
+        <div class="stair"><span class="tag">Step 3</span><p class="line">Differentiate in t.</p><span class="eqm">dV/dt = 14πr · dr/dt</span><p>The chain rule brings out dr/dt. 14πr is the side-wall area, 2πrh.</p></div>
+        <div class="stair"><span class="tag">Step 4</span><p class="line">Substitute last.</p><span class="eqm">−42π(12) ≈ −1583 in³/s</span><p>Use dr/dt = −3 and the radius at the moment you care about.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <header class="titleblock rise" id="sheet2">
+    <div class="tb-main">
+      <h2 class="h1-2">Related rates: two cars and an angle</h2>
+      <p>A yellow car drives east away from an intersection at 60 mph while a white car drives south toward it at 40 mph. Let <i class="v">x</i> be the yellow car’s distance from the intersection, <i class="v">y</i> the white car’s, and <i class="v">θ</i> the angle at the yellow car between the road and the line to the white car.</p>
+    </div>
+    <dl class="tb-specs">
+      <div><dt>Given</dt><dd class="chg">dx/dt = 60 mph</dd></div>
+      <div><dt>Given</dt><dd class="fix">dy/dt = −40 mph</dd></div>
+      <div><dt>Model</dt><dd>tan θ = y / x</dd></div>
+      <div><dt>Find</dt><dd>dθ/dt at x = 8, y = 6</dd></div>
+    </dl>
+  </header>
+
+  <div class="ws">
+    <div class="col-7">
+      <section class="zone rise" id="zG" aria-labelledby="hG">
+        <div class="zone-h">
+          <h2 id="hG"><span class="zid" aria-hidden="true">G</span>Simulation, aerial view</h2>
+          <span class="zone-meta" id="c2Clock">t = 0.0 min</span>
+        </div>
+        <div class="zone-b"><canvas id="c2Stage" aria-label="Aerial view: the yellow car drives east from the intersection while the white car drives south toward it; the right triangle x, y, z and angle θ are drawn on the road"></canvas></div>
+        <div class="ctrl">
+          <div class="cg">
+            <span class="cg-t">Playback</span>
+            <div class="row">
+              <button class="btn primary" id="c2Play">Play</button>
+              <button class="btn" id="c2Reset">Reset</button>
+            </div>
+            <div class="seg" role="group" aria-label="Playback speed for sheet 2">
+              <button class="btn" data-sp2="0.5" aria-pressed="false">0.5×</button>
+              <button class="btn" data-sp2="1" aria-pressed="true">1×</button>
+              <button class="btn" data-sp2="2" aria-pressed="false">2×</button>
+            </div>
+          </div>
+          <div class="cg">
+            <span class="cg-t">Inputs</span>
+            <div class="scrub"><label for="c2T">Time</label><input type="range" id="c2T" min="0" max="17" step="0.05" value="0"><output id="c2TOut" for="c2T">0.0 min</output></div>
+            <div class="row"><button class="btn" id="c2Book">Jump to x = 8, y = 6</button></div>
+          </div>
+        </div>
+        <form class="solve" id="c2Form" novalidate>
+          <label for="c2XIn">Solve at <i class="v">x</i> =</label>
+          <input type="number" id="c2XIn" inputmode="decimal" min="0" max="17" step="any" placeholder="8" aria-describedby="c2Msg">
+          <span>mi</span>
+          <button class="btn primary" type="submit">Jump there</button>
+          <span class="msg" id="c2Msg" role="status"></span>
+        </form>
+      </section>
+
+      <section class="zone rise" id="zJ" aria-labelledby="hJ">
+        <div class="zone-h"><h2 id="hJ"><span class="zid" aria-hidden="true">J</span>Angle over time</h2></div>
+        <div class="zone-b">
+          <canvas id="c2Graph" aria-label="Graph of theta against time with its tangent line"></canvas>
+          <div class="legend">
+            <span style="--c:var(--ink)">θ(t), radians</span>
+            <span class="dash" style="--c:var(--crimson)">Tangent: slope = dθ/dt right now</span>
+          </div>
+          <p class="note">Drag across the graph to scrub time. θ starts at π/2 when the yellow car is at the intersection and falls to 0 when the white car arrives.</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-5">
+      <section class="zone inst rise" style="--i:1" aria-labelledby="hH">
+        <div class="zone-h"><h2 id="hH"><span class="zid" aria-hidden="true">H</span>Readout</h2></div>
+        <div class="zone-b">
+          <div class="gauges">
+            <div class="g change"><span class="v" id="c2gX"></span><span class="k">x, dx/dt = 60 mph</span></div>
+            <div class="g fixed"><span class="v" id="c2gY"></span><span class="k">y, dy/dt = −40 mph</span></div>
+            <div class="g"><span class="v" id="c2gZ"></span><span class="k">z = √(x² + y²)</span></div>
+            <div class="g"><span class="v" id="c2gDZ"></span><span class="k">dz/dt</span></div>
+            <div class="g" style="grid-column:1/-1"><span class="v" id="c2gTh"></span><span class="k">θ = arctan(y / x)</span></div>
+            <div class="g hot"><span class="v" id="c2gD"></span><span class="k">dθ/dt = (x·dy/dt − y·dx/dt) / z²</span></div>
+          </div>
+          <p class="insight" id="c2Insight"></p>
+        </div>
+      </section>
+
+      <section class="zone rise" style="--i:2" aria-labelledby="hI">
+        <div class="zone-h"><h2 id="hI"><span class="zid" aria-hidden="true">I</span>Worked solution</h2></div>
+        <div class="zone-b"><ol class="steps" id="c2Steps"></ol></div>
+      </section>
+
+      <section class="zone rise" style="--i:3" aria-labelledby="hK">
+        <div class="zone-h"><h2 id="hK"><span class="zid" aria-hidden="true">K</span>Answer table</h2></div>
+        <div class="tbl-wrap">
+          <table class="ans">
+            <caption>The 8-minute row is the textbook instant. Select a time to load it into zone G.</caption>
+            <thead><tr><th scope="col">t (min)</th><th scope="col">x</th><th scope="col">y</th><th scope="col">θ (rad)</th><th scope="col">dθ/dt (rad/h)</th></tr></thead>
+            <tbody id="c2Body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+
+
+  <header class="titleblock rise" id="sheet3">
+    <div class="tb-main">
+      <h2 class="h1-2">Related rates: a growing soap bubble</h2>
+      <p>Ankur is blowing a spherical bubble whose volume grows at a constant 8π cubic centimeters per second. At one instant the volume is 288π cm³. Find the radius then, how fast the radius is changing, and how fast the surface area is changing.</p>
+    </div>
+    <dl class="tb-specs">
+      <div><dt>Given</dt><dd class="chg">dV/dt = 8π cm³/s</dd></div>
+      <div><dt>Instant</dt><dd>V = 288π cm³</dd></div>
+      <div><dt>Model</dt><dd>V = (4/3)πr³, S = 4πr²</dd></div>
+      <div><dt>Find</dt><dd>(a) r  (b) dr/dt  (c) dS/dt</dd></div>
+    </dl>
+  </header>
+
+  <div class="ws">
+    <div class="col-7">
+      <section class="zone rise" id="zL" aria-labelledby="hL">
+        <div class="zone-h">
+          <h2 id="hL"><span class="zid" aria-hidden="true">L</span>Simulation</h2>
+          <span class="zone-meta" id="b3Clock">t = 0.0 s</span>
+        </div>
+        <div class="zone-b"><canvas id="b3Stage" aria-label="A soap bubble growing in a backyard; a ruler in centimeters, the radius line and the shell of air added each second are drawn on it"></canvas></div>
+        <div class="ctrl">
+          <div class="cg">
+            <span class="cg-t">Playback</span>
+            <div class="row">
+              <button class="btn primary" id="b3Play">Play</button>
+              <button class="btn" id="b3Reset">Reset</button>
+            </div>
+            <div class="seg" role="group" aria-label="Playback speed for sheet 3">
+              <button class="btn" data-sp3="1" aria-pressed="false">1×</button>
+              <button class="btn" data-sp3="2" aria-pressed="true">2×</button>
+              <button class="btn" data-sp3="4" aria-pressed="false">4×</button>
+            </div>
+          </div>
+          <div class="cg">
+            <span class="cg-t">Inputs</span>
+            <div class="scrub"><label for="b3T">Time</label><input type="range" id="b3T" min="0" max="72" step="0.1" value="36"><output id="b3TOut" for="b3T">36.0 s</output></div>
+            <div class="row"><button class="btn" id="b3Book">Jump to V = 288π</button></div>
+          </div>
+        </div>
+        <form class="solve" id="b3Form" novalidate>
+          <label for="b3VIn">Solve at <i class="v">V</i> =</label>
+          <input type="number" id="b3VIn" inputmode="decimal" min="0" max="576" step="any" placeholder="288" aria-describedby="b3Msg">
+          <span>π cm³</span>
+          <button class="btn primary" type="submit">Jump there</button>
+          <span class="msg" id="b3Msg" role="status"></span>
+        </form>
+      </section>
+
+      <section class="zone rise" id="zO" aria-labelledby="hO">
+        <div class="zone-h">
+          <h2 id="hO"><span class="zid" aria-hidden="true">O</span><span id="b3GraphTitle">Radius over time</span></h2>
+          <div class="seg" role="group" aria-label="Quantity to graph">
+            <button class="btn" id="b3qR" aria-pressed="true">Radius</button>
+            <button class="btn" id="b3qS" aria-pressed="false">Surface area</button>
+          </div>
+        </div>
+        <div class="zone-b">
+          <canvas id="b3Graph" aria-label="Graph of the radius or surface area against time with its tangent line"></canvas>
+          <div class="legend">
+            <span style="--c:var(--ink)" id="b3Lg">r(t), cm</span>
+            <span class="dash" style="--c:var(--crimson)">Tangent: slope = rate right now</span>
+          </div>
+          <p class="note">Drag across the graph to scrub time. Air goes in at a steady 8π cm³/s, yet the curve flattens: the bigger the bubble, the more surface that air has to spread over.</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-5">
+      <section class="zone inst rise" style="--i:1" aria-labelledby="hM">
+        <div class="zone-h"><h2 id="hM"><span class="zid" aria-hidden="true">M</span>Readout</h2></div>
+        <div class="zone-b">
+          <div class="gauges">
+            <div class="g"><span class="v" id="b3gV"></span><span class="k">Volume V</span></div>
+            <div class="g change"><span class="v">8π <small>cm³/s</small></span><span class="k">dV/dt, constant</span></div>
+            <div class="g"><span class="v" id="b3gR"></span><span class="k">(a) radius r</span></div>
+            <div class="g"><span class="v" id="b3gS"></span><span class="k">Surface S = 4πr²</span></div>
+            <div class="g hot"><span class="v" id="b3gDR"></span><span class="k">(b) dr/dt = 2 / r²</span></div>
+            <div class="g hot"><span class="v" id="b3gDS"></span><span class="k">(c) dS/dt = 16π / r</span></div>
+          </div>
+          <p class="insight" id="b3Insight"></p>
+        </div>
+      </section>
+
+      <section class="zone rise" style="--i:2" aria-labelledby="hN">
+        <div class="zone-h"><h2 id="hN"><span class="zid" aria-hidden="true">N</span>Worked solution</h2></div>
+        <div class="zone-b"><ol class="steps" id="b3Steps"></ol></div>
+      </section>
+
+      <section class="zone rise" style="--i:3" aria-labelledby="hP">
+        <div class="zone-h"><h2 id="hP"><span class="zid" aria-hidden="true">P</span>Answer table</h2></div>
+        <div class="tbl-wrap">
+          <table class="ans">
+            <caption>The r = 6 row is the instant in the problem. Select a radius to load it into zone L.</caption>
+            <thead><tr><th scope="col">r (cm)</th><th scope="col">V (cm³)</th><th scope="col">t (s)</th><th scope="col">dr/dt</th><th scope="col">dS/dt</th></tr></thead>
+            <tbody id="b3Body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+
+  <header class="titleblock rise" id="sheet4">
+    <div class="tb-main">
+      <h2 class="h1-2">Related rates: a draining water tank</h2>
+      <p>A cylinder filled with water has a radius of 4 feet and a height of 11 feet. Water is drained so that the height falls at 0.1 feet per second. How fast is the volume of water in the container changing?</p>
+    </div>
+    <dl class="tb-specs">
+      <div><dt>Given</dt><dd class="fix">r = 4 ft, constant</dd></div>
+      <div><dt>Given</dt><dd class="chg">dh/dt = −0.1 ft/s</dd></div>
+      <div><dt>Model</dt><dd>V = πr²h</dd></div>
+      <div><dt>Find</dt><dd>dV/dt</dd></div>
+    </dl>
+  </header>
+
+  <div class="ws">
+    <div class="col-7">
+      <section class="zone rise" id="zQ" aria-labelledby="hQ">
+        <div class="zone-h">
+          <h2 id="hQ"><span class="zid" aria-hidden="true">Q</span>Simulation</h2>
+          <span class="zone-meta" id="w4Clock">t = 0.0 s</span>
+        </div>
+        <div class="zone-b"><canvas id="w4Stage" aria-label="A clear 11-foot tank of water on a concrete pad draining through a pipe; a height ruler in feet marks the water level"></canvas></div>
+        <div class="ctrl">
+          <div class="cg">
+            <span class="cg-t">Playback</span>
+            <div class="row">
+              <button class="btn primary" id="w4Play">Play</button>
+              <button class="btn" id="w4Reset">Reset</button>
+            </div>
+            <div class="seg" role="group" aria-label="Playback speed for sheet 4">
+              <button class="btn" data-sp4="2" aria-pressed="false">2×</button>
+              <button class="btn" data-sp4="5" aria-pressed="true">5×</button>
+              <button class="btn" data-sp4="10" aria-pressed="false">10×</button>
+            </div>
+          </div>
+          <div class="cg">
+            <span class="cg-t">Inputs</span>
+            <div class="scrub"><label for="w4T">Time</label><input type="range" id="w4T" min="0" max="110" step="0.1" value="0"><output id="w4TOut" for="w4T">0.0 s</output></div>
+          </div>
+        </div>
+        <form class="solve" id="w4Form" novalidate>
+          <label for="w4HIn">Solve at <i class="v">h</i> =</label>
+          <input type="number" id="w4HIn" inputmode="decimal" min="0" max="11" step="any" placeholder="5" aria-describedby="w4Msg">
+          <span>ft</span>
+          <button class="btn primary" type="submit">Jump there</button>
+          <span class="msg" id="w4Msg" role="status"></span>
+        </form>
+      </section>
+
+      <section class="zone rise" id="zT" aria-labelledby="hT">
+        <div class="zone-h">
+          <h2 id="hT"><span class="zid" aria-hidden="true">T</span><span id="w4GraphTitle">Volume over time</span></h2>
+          <div class="seg" role="group" aria-label="Quantity to graph on sheet 4">
+            <button class="btn" id="w4qV" aria-pressed="true">Volume</button>
+            <button class="btn" id="w4qH" aria-pressed="false">Height</button>
+          </div>
+        </div>
+        <div class="zone-b">
+          <canvas id="w4Graph" aria-label="Graph of the volume or height against time with its tangent line"></canvas>
+          <div class="legend">
+            <span style="--c:var(--ink)" id="w4Lg">V(t), ft³</span>
+            <span class="dash" style="--c:var(--crimson)">Tangent: slope = rate right now</span>
+          </div>
+          <p class="note">The graph is a straight line, so the tangent sits on top of it at every moment. With the radius fixed, the volume drains at the same rate whether the tank is full or nearly empty.</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-5">
+      <section class="zone inst rise" style="--i:1" aria-labelledby="hR">
+        <div class="zone-h"><h2 id="hR"><span class="zid" aria-hidden="true">R</span>Readout</h2></div>
+        <div class="zone-b">
+          <div class="gauges">
+            <div class="g"><span class="v" id="w4gH"></span><span class="k">Height h</span></div>
+            <div class="g change"><span class="v">−0.1 <small>ft/s</small></span><span class="k">dh/dt, constant</span></div>
+            <div class="g fixed"><span class="v">4 <small>ft</small></span><span class="k">Radius r, fixed</span></div>
+            <div class="g"><span class="v" id="w4gV"></span><span class="k">V = 16πh</span></div>
+            <div class="g hot"><span class="v" id="w4gD"></span><span class="k">dV/dt = 16π · dh/dt = −1.6π</span></div>
+          </div>
+          <p class="insight" id="w4Insight">Unlike sheet 1, here the radius is fixed, so V = 16πh is a straight line in h. Every tenth of a foot of height is the same 1.6π ft³ of water, so the volume falls at <strong>−1.6π ≈ −5.03 ft³/s</strong> from the first second to the last.</p>
+        </div>
+      </section>
+
+      <section class="zone rise" style="--i:2" aria-labelledby="hS">
+        <div class="zone-h"><h2 id="hS"><span class="zid" aria-hidden="true">S</span>Worked solution</h2></div>
+        <div class="zone-b"><ol class="steps" id="w4Steps"></ol></div>
+      </section>
+
+      <section class="zone rise" style="--i:3" aria-labelledby="hU">
+        <div class="zone-h"><h2 id="hU"><span class="zid" aria-hidden="true">U</span>Answer table</h2></div>
+        <div class="tbl-wrap">
+          <table class="ans">
+            <caption>dV/dt is the same in every row. Select a time to load it into zone Q.</caption>
+            <thead><tr><th scope="col">t (s)</th><th scope="col">h (ft)</th><th scope="col">V (ft³)</th><th scope="col">dV/dt (ft³/s)</th></tr></thead>
+            <tbody id="w4Body"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+
+  <header class="titleblock rise" id="sheet5">
+    <div class="tb-main">
+      <h2 class="h1-2">Velocity Raptor: motion on a line</h2>
+      <p>A velociraptor runs along a straight trail marked in meters, with the origin at 0 and right as positive. Pick a cell in either table to launch it in that case, or set the start yourself. As it runs, the readout and both tables report what the signs of x, v and a mean right now.</p>
+    </div>
+    <dl class="tb-specs">
+      <div><dt>Position</dt><dd>x(t)</dd></div>
+      <div><dt>Velocity</dt><dd class="chg">v(t) = x′(t)</dd></div>
+      <div><dt>Speed</dt><dd>|v(t)|</dd></div>
+      <div><dt>Acceleration</dt><dd class="fix">a(t) = v′(t) = x″(t)</dd></div>
+    </dl>
+  </header>
+
+  <div class="ws">
+    <div class="col-7">
+      <section class="zone rise" id="zV" aria-labelledby="hV">
+        <div class="zone-h">
+          <h2 id="hV"><span class="zid" aria-hidden="true">V</span>Simulation</h2>
+          <span class="zone-meta" id="r5Case">Case: towards the origin</span>
+        </div>
+        <div class="zone-b">
+          <canvas id="r5Stage" aria-label="A velociraptor running along a number line from −10 to 10 meters, with arrows for its velocity and acceleration and dots marking where it was every half second"></canvas>
+          <p class="note">Dots mark where the raptor was every half second: evenly spaced means constant speed, spreading out means speeding up, bunching up means slowing down. The raptor is drawn larger than life so you can see it run.</p>
+        </div>
+        <div class="ctrl">
+          <div class="cg">
+            <span class="cg-t">Playback</span>
+            <div class="row">
+              <button class="btn primary" id="r5Play">Play</button>
+              <button class="btn" id="r5Reset">Reset</button>
+            </div>
+            <div class="seg" role="group" aria-label="Playback speed for sheet 5">
+              <button class="btn" data-sp5="0.5" aria-pressed="false">0.5×</button>
+              <button class="btn" data-sp5="1" aria-pressed="true">1×</button>
+              <button class="btn" data-sp5="2" aria-pressed="false">2×</button>
+            </div>
+          </div>
+          <div class="cg">
+            <span class="cg-t">Start</span>
+            <div class="scrub"><label for="r5X0">x(0)</label><input type="range" id="r5X0" min="-9" max="9" step="0.5" value="-9"><output id="r5X0Out" for="r5X0">−9 m</output></div>
+            <div class="scrub"><label for="r5V0">v(0)</label><input type="range" id="r5V0" min="-5" max="5" step="0.1" value="1.6"><output id="r5V0Out" for="r5V0">1.6 m/s</output></div>
+            <div class="scrub"><label for="r5A">a</label><input type="range" id="r5A" min="-2" max="2" step="0.1" value="0"><output id="r5AOut" for="r5A">0 m/s²</output></div>
+          </div>
+        </div>
+        <div class="solve">
+          <div class="scrub" style="flex:1 1 100%"><label for="r5T">Time</label><input type="range" id="r5T" min="0" max="12" step="0.01" value="0"><output id="r5TOut" for="r5T">0.00 s</output></div>
+        </div>
+      </section>
+
+      <section class="zone rise" id="zY" aria-labelledby="hY">
+        <div class="zone-h"><h2 id="hY"><span class="zid" aria-hidden="true">Y</span>Position, velocity and acceleration over time</h2></div>
+        <div class="zone-b">
+          <canvas id="r5Graph" aria-label="Three stacked graphs of position, velocity and acceleration against time"></canvas>
+          <p class="note">Drag across the graphs to scrub time. v(t) is the slope of x(t), and a(t) is the slope of v(t). Where v(t) crosses zero, the raptor is at rest for an instant.</p>
+        </div>
+      </section>
+    </div>
+
+    <div class="col-5">
+      <section class="zone rise" style="--i:1" aria-labelledby="hW">
+        <div class="zone-h"><h2 id="hW"><span class="zid" aria-hidden="true">W</span>The two tables</h2></div>
+        <div class="zone-b">
+          <div class="pun-wrap">
+            <p class="pun-t">LT #1: compare the signs of position and velocity</p>
+            <table class="pun" aria-label="Signs of position and velocity">
+              <thead><tr><td></td><th scope="col">x(t) &gt; 0<span>right of origin</span></th><th scope="col">x(t) &lt; 0<span>left of origin</span></th></tr></thead>
+              <tbody>
+                <tr><th scope="row">v(t) &gt; 0<span>moving right</span></th>
+                  <td><button class="cell" data-case="xp_vp" data-t="1">Away from origin</button></td>
+                  <td><button class="cell" data-case="xn_vp" data-t="1">Towards the origin</button></td></tr>
+                <tr><th scope="row">v(t) &lt; 0<span>moving left</span></th>
+                  <td><button class="cell" data-case="xp_vn" data-t="1">Towards the origin</button></td>
+                  <td><button class="cell" data-case="xn_vn" data-t="1">Away from origin</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pun-wrap">
+            <p class="pun-t">LT #2: compare the signs of velocity and acceleration</p>
+            <table class="pun" aria-label="Signs of velocity and acceleration">
+              <thead><tr><td></td><th scope="col">a(t) &gt; 0<span>pushed right</span></th><th scope="col">a(t) &lt; 0<span>pushed left</span></th></tr></thead>
+              <tbody>
+                <tr><th scope="row">v(t) &gt; 0<span>moving right</span></th>
+                  <td><button class="cell" data-case="vp_ap" data-t="2">Speeding up</button></td>
+                  <td><button class="cell" data-case="vp_an" data-t="2">Slowing down</button></td></tr>
+                <tr><th scope="row">v(t) &lt; 0<span>moving left</span></th>
+                  <td><button class="cell" data-case="vn_ap" data-t="2">Slowing down</button></td>
+                  <td><button class="cell" data-case="vn_an" data-t="2">Speeding up</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">Select a cell to launch the raptor in that case. The highlighted cell follows the raptor live, so watch it jump when the raptor crosses the origin or stops and turns around.</p>
+        </div>
+      </section>
+
+      <section class="zone inst rise" style="--i:2" aria-labelledby="hX">
+        <div class="zone-h"><h2 id="hX"><span class="zid" aria-hidden="true">X</span>Readout</h2></div>
+        <div class="zone-b">
+          <div class="gauges">
+            <div class="g"><span class="v" id="r5gX"></span><span class="k">Position x(t)</span></div>
+            <div class="g change"><span class="v" id="r5gV"></span><span class="k">Velocity v(t)</span></div>
+            <div class="g"><span class="v" id="r5gS"></span><span class="k">Speed |v(t)|</span></div>
+            <div class="g fixed"><span class="v" id="r5gA"></span><span class="k">Acceleration a(t)</span></div>
+            <div class="g hot"><span class="v r5say" id="r5Say1"></span><span class="k" id="r5Why1"></span></div>
+            <div class="g hot"><span class="v r5say" id="r5Say2"></span><span class="k" id="r5Why2"></span></div>
+            <div class="g"><span class="v" id="r5gAV"></span><span class="k">Average velocity since t = 0</span></div>
+            <div class="g"><span class="v" id="r5gAA"></span><span class="k">Average acceleration since t = 0</span></div>
+          </div>
+          <p class="insight" id="r5Insight"></p>
+        </div>
+      </section>
+
+      <section class="zone rise" style="--i:3" aria-labelledby="hZ">
+        <div class="zone-h"><h2 id="hZ"><span class="zid" aria-hidden="true">Z</span>Rules</h2></div>
+        <div class="tbl-wrap">
+          <table class="ans rules">
+            <tbody>
+              <tr><th scope="row">v(t) = 0</th><td>Object is at rest</td></tr>
+              <tr><th scope="row">v(t) &gt; 0</th><td>Moving right (or up)</td></tr>
+              <tr><th scope="row">v(t) &lt; 0</th><td>Moving left (or down)</td></tr>
+              <tr><th scope="row">Same signs, v and a</th><td>Speeding up</td></tr>
+              <tr><th scope="row">Opposite signs, v and a</th><td>Slowing down</td></tr>
+              <tr><th scope="row">Average velocity</th><td>[x(b) − x(a)] / (b − a)</td></tr>
+              <tr><th scope="row">Average acceleration</th><td>[v(b) − v(a)] / (b − a)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <span>Related rates · motion on a line</span>
+    <span>Scenes rendered in Blender</span>
+    <a href="#top">Back to top</a>
+  </footer>
+</div>
+
+<script>
+document.documentElement.classList.add('js');
+(() => {
+  const H = 7, DR = -3, PI = Math.PI;
+  const st = { r0: 12, t: 0, playing: false, speed: 0.2, q: 'V' };
+  let sheds = [], lastShedR = 12;
+  const SHED_EVERY = 0.75, SHED_MS = 950;
+  const $ = id => document.getElementById(id);
+  const stage = $('stage'), graph = $('graph');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const tEnd = () => st.r0 / 3;
+  const rAt = t => Math.max(0, st.r0 + DR * t);
+  const clearSheds = () => { sheds = []; lastShedR = rAt(st.t); };
+  const Q = r => st.q === 'V' ? PI * r * r * H : 2 * PI * r * r + 2 * PI * r * H;
+  const dQ = r => st.q === 'V' ? 2 * PI * r * H * DR : (4 * PI * r + 2 * PI * H) * DR;
+  const minus = s => s.replace(/-/g, '−');
+  const f = (n, d = 2) => minus(n.toFixed(d));
+  const c = n => minus((+n.toFixed(2)).toString());
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const FONT = () => css('--mono');
+
+  function fit(cv){
+    const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+    if (cv.width !== Math.round(w*dpr) || cv.height !== Math.round(h*dpr)){ cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+    const ctx = cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return [ctx, w, h];
+  }
+  function arrow(ctx, x1, y1, x2, y2, col, w=3){
+    ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    const a = Math.atan2(y2-y1, x2-x1), L = 11;
+    ctx.beginPath(); ctx.moveTo(x2,y2);
+    ctx.lineTo(x2 - L*Math.cos(a-0.5), y2 - L*Math.sin(a-0.5));
+    ctx.lineTo(x2 - L*Math.cos(a+0.5), y2 - L*Math.sin(a+0.5));
+    ctx.closePath(); ctx.fill();
+  }
+
+  /* ---------- cylinder stage ---------- */
+  function drawStage(){
+    const [ctx, W, Hh] = fit(stage);
+    const ink = css('--ink'), soft = css('--ink-soft'), chg = css('--crimson'), chgT = css('--crimson-text'), fixed = css('--fixed'),
+          fill = css('--c-fill'), fill2 = css('--c-fill-2'), rule = css('--c-rule');
+    const F = FONT();
+    ctx.clearRect(0,0,W,Hh);
+    const rMax = 15, tilt = 0.28;
+    const s = Math.min((W - 120) / (2*rMax), (Hh - 70) / (H + 2*rMax*tilt));
+    const cx = W/2 + 18, botY = Hh - 26 - rMax*tilt*s, topY = botY - H*s;
+    const r = rAt(st.t), rx = r*s, ry = rx*tilt;
+    const r0x = st.r0*s, r0y = r0x*tilt;
+
+    ctx.setLineDash([6,6]); ctx.strokeStyle = rule; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(cx, topY, r0x, r0y, 0, 0, 2*PI); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(cx, botY, r0x, r0y, 0, 0, PI); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx-r0x, topY); ctx.lineTo(cx-r0x, botY); ctx.moveTo(cx+r0x, topY); ctx.lineTo(cx+r0x, botY); ctx.stroke();
+    ctx.setLineDash([]);
+
+    if (rx > 0.5 && st.q === 'V'){
+      const ox = rx + 0.5*s, oy = ox*tilt;
+      ctx.save(); ctx.globalAlpha = 0.3; ctx.fillStyle = chg;
+      ctx.beginPath(); ctx.moveTo(cx-ox, topY); ctx.lineTo(cx-ox, botY);
+      ctx.ellipse(cx, botY, ox, oy, 0, PI, 0, true); ctx.lineTo(cx+ox, topY);
+      ctx.ellipse(cx, topY, ox, oy, 0, 0, PI, true); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx, topY, ox, oy, 0, PI, 2*PI); ctx.fill();
+      ctx.restore();
+    }
+    const now = performance.now();
+    sheds = sheds.filter(d => now - d.born < SHED_MS);
+    for (const d of sheds){
+      const p = (now - d.born) / SHED_MS, e = 1 - Math.pow(1-p, 3);
+      const sx = d.r*s + 0.5*s + e*26, sy = sx*tilt, lift = e*10;
+      ctx.save(); ctx.globalAlpha = (1-p)*0.8; ctx.strokeStyle = chg; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.ellipse(cx, topY - lift, sx, sy, 0, 0, 2*PI); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx-sx, topY - lift); ctx.lineTo(cx-sx, botY - lift); ctx.ellipse(cx, botY - lift, sx, sy, 0, PI, 0, true); ctx.lineTo(cx+sx, topY - lift); ctx.stroke();
+      ctx.restore();
+    }
+
+    if (rx > 0.5){
+      ctx.fillStyle = fill2;
+      ctx.beginPath(); ctx.moveTo(cx-rx, topY); ctx.lineTo(cx-rx, botY);
+      ctx.ellipse(cx, botY, rx, ry, 0, PI, 0, true); ctx.lineTo(cx+rx, topY); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = ink; ctx.lineWidth = 2.5; ctx.lineJoin = 'round';
+      ctx.beginPath(); ctx.moveTo(cx-rx, topY); ctx.lineTo(cx-rx, botY); ctx.ellipse(cx, botY, rx, ry, 0, PI, 0, true); ctx.lineTo(cx+rx, topY); ctx.stroke();
+      ctx.fillStyle = fill; ctx.beginPath(); ctx.ellipse(cx, topY, rx, ry, 0, 0, 2*PI); ctx.fill(); ctx.stroke();
+    }
+
+    ctx.fillStyle = ink; ctx.beginPath(); ctx.arc(cx, topY, 3.5, 0, 2*PI); ctx.fill();
+    if (rx > 2){
+      ctx.strokeStyle = ink; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(cx, topY); ctx.lineTo(cx+rx, topY); ctx.stroke();
+      ctx.font = `600 14px ${F}`; ctx.fillStyle = ink; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      ctx.fillText(`r = ${f(r,2)}`, cx + rx/2, topY - 8);
+    }
+    const pulse = st.playing && !reduce ? (performance.now()/600 % 1) * 10 : 0;
+    const ax = cx + Math.max(rx, 4) + 46 - pulse;
+    arrow(ctx, ax, topY + H*s*0.5, ax - 34, topY + H*s*0.5, chg);
+    arrow(ctx, 2*cx - ax, topY + H*s*0.5, 2*cx - ax + 34, topY + H*s*0.5, chg);
+    const narrow = W < 460;
+    ctx.font = `600 ${narrow ? 12.5 : 15}px ${F}`; ctx.fillStyle = chgT; ctx.textBaseline = 'alphabetic';
+    if (narrow){ ctx.textAlign = 'left'; ctx.fillText('dr/dt = −3 in/s', 6, Hh - 6); }
+    else { ctx.textAlign = 'right'; ctx.fillText('dr/dt = −3 in/s', W - 6, topY - Math.max(r0y, 8) - 8); }
+
+    const bx = cx - rMax*s - 26;
+    ctx.strokeStyle = fixed; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(bx+8, topY); ctx.lineTo(bx, topY); ctx.lineTo(bx, botY); ctx.lineTo(bx+8, botY); ctx.stroke();
+    ctx.save(); ctx.translate(bx - 11, (topY+botY)/2); ctx.rotate(-PI/2);
+    ctx.fillStyle = fixed; ctx.textAlign = 'center'; ctx.font = `600 14px ${F}`;
+    ctx.fillText('h = 7, fixed', 0, 0); ctx.restore();
+
+    if (st.q === 'V'){
+      const k = Math.min(160, W*0.42) / (2*PI*15), x0 = 12, y0 = 12;
+      const sw = Math.max(6, H*k), w0 = 2*PI*st.r0*k, w = 2*PI*r*k;
+      ctx.setLineDash([5,5]); ctx.strokeStyle = rule; ctx.lineWidth = 1.5; ctx.strokeRect(x0, y0, w0, sw); ctx.setLineDash([]);
+      ctx.fillStyle = chg; ctx.fillRect(x0, y0, w, sw);
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = soft; ctx.font = `700 13px ${F}`;
+      if (narrow){ ctx.font = `600 11px ${F}`; ctx.fillText(`wall 2πr·7 = ${f(14*PI*r,1)} in²`, x0 + w0 + 8, y0 + sw); }
+      else {
+        ctx.fillText(`Wall unrolled: 2πr × 7 = ${f(14*PI*r,1)} in²`, x0, y0 + sw + 17);
+        ctx.fillStyle = chgT; ctx.font = `600 13px ${F}`;
+        ctx.fillText(`× (−3 in/s) = ${f(-42*PI*r,1)} in³/s`, x0, y0 + sw + 34);
+      }
+    }
+    ctx.fillStyle = soft; ctx.font = `600 ${narrow ? 11 : 13}px ${F}`; ctx.textAlign = 'right';
+    ctx.fillText(narrow ? `dashed: r = ${st.r0}` : `Dashed: start, r = ${st.r0} in`, W - 6, Hh - 6);
+    if (r === 0){ ctx.fillStyle = chgT; ctx.textAlign='center'; ctx.font = `600 15px ${F}`; ctx.fillText('r = 0 at t = ' + f(tEnd(),2) + ' s: the cylinder is gone', cx, topY - 18); }
+  }
+
+  /* ---------- graph ---------- */
+  function niceStep(span, n){ const raw = span/n, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw/p; return (m<1.5?1:m<3?2:m<7?5:10)*p; }
+  let plotBox = null;
+  function drawGraph(){
+    const [ctx, W, Hh] = fit(graph);
+    const ink = css('--ink'), soft = css('--ink-soft'), chg = css('--crimson'), chgT = css('--crimson-text'), grid = css('--c-grid'), rule = css('--c-rule');
+    const F = FONT();
+    ctx.clearRect(0,0,W,Hh);
+    const L = 62, R = 14, T = 16, B = 38;
+    const pw = W - L - R, ph = Hh - T - B; plotBox = {L, T, pw, ph};
+    const tMax = tEnd(), yMax = Q(st.r0) * 1.05;
+    const X = t => L + t/tMax*pw, Y = v => T + ph - v/yMax*ph;
+    ctx.font = `600 12.5px ${F}`; ctx.fillStyle = soft; ctx.lineWidth = 1.5;
+    const ys = niceStep(yMax, 5);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let v = 0; v <= yMax; v += ys){ ctx.strokeStyle = grid; ctx.beginPath(); ctx.moveTo(L, Y(v)); ctx.lineTo(L+pw, Y(v)); ctx.stroke(); ctx.fillText(Math.round(v).toLocaleString('en-US'), L-8, Y(v)); }
+    const xs = tMax <= 2 ? 0.25 : 0.5;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let t = 0; t <= tMax + 1e-9; t += xs) ctx.fillText(+t.toFixed(2), X(t), T+ph+8);
+    ctx.strokeStyle = rule; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(L, T+ph); ctx.lineTo(L+pw, T+ph); ctx.stroke();
+    ctx.fillStyle = soft; ctx.textAlign = 'right'; ctx.font = `700 12.5px ${F}`; ctx.fillText('t (s)', L+pw, T+ph+22);
+    ctx.save(); ctx.translate(13, T + ph/2); ctx.rotate(-PI/2); ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(st.q === 'V' ? 'V (in³)' : 'S (in²)', 0, 0); ctx.restore();
+
+    ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    const path = (a, b) => { ctx.beginPath(); for (let i = 0; i <= 120; i++){ const t = a + (b-a)*i/120; const p = [X(t), Y(Q(rAt(t)))]; i ? ctx.lineTo(...p) : ctx.moveTo(...p);} ctx.stroke(); };
+    ctx.strokeStyle = rule; path(st.t, tMax);
+    ctx.strokeStyle = ink; path(0, st.t);
+
+    const r = rAt(st.t), y0 = Q(r), m = dQ(r);
+    ctx.save(); ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
+    ctx.setLineDash([9,7]); ctx.strokeStyle = chg; ctx.lineWidth = 3;
+    const d = tMax * 0.35;
+    ctx.beginPath(); ctx.moveTo(X(st.t-d), Y(y0 - m*d)); ctx.lineTo(X(st.t+d), Y(y0 + m*d)); ctx.stroke();
+    ctx.restore(); ctx.setLineDash([]);
+    ctx.fillStyle = chg; ctx.beginPath(); ctx.arc(X(st.t), Y(y0), 7, 0, 2*PI); ctx.fill();
+    ctx.fillStyle = chgT; ctx.font = `600 13.5px ${F}`; ctx.textBaseline = 'bottom';
+    const lbl = `slope ${f(m,1)}`; const tx = X(st.t) + 12;
+    ctx.textAlign = tx + 120 > L + pw ? 'right' : 'left';
+    ctx.fillText(lbl, ctx.textAlign === 'right' ? X(st.t) - 12 : tx, Y(y0) - 10);
+  }
+
+  /* ---------- text ---------- */
+  function render(){
+    const r = rAt(st.t), q = Q(r), d = dQ(r), isV = st.q === 'V';
+    $('t').max = tEnd().toFixed(2); $('t').value = st.t;
+    $('tOut').textContent = f(st.t) + ' s'; $('r0Out').textContent = st.r0 + ' in';
+    $('gT').innerHTML = `${f(st.t)} <small>s</small>`;
+    $('gR').innerHTML = `${f(r)} <small>in</small>`;
+    $('kQ').textContent = isV ? 'Volume, V = 7πr²' : 'Surface area, S = 2πr² + 14πr';
+    $('kD').textContent = isV ? 'Rate, dV/dt = −42πr' : 'Rate, dS/dt = −(12r + 42)π';
+    $('gQ').innerHTML = `${f(q,1)} <small>${isV ? 'in³' : 'in²'}</small>`;
+    $('gD').innerHTML = `${f(d,1)} <small>${isV ? 'in³/s' : 'in²/s'}</small>`;
+    $('graphTitle').textContent = isV ? 'Volume over time' : 'Surface area over time';
+    $('lgCurve').textContent = isV ? 'V(t)' : 'S(t)';
+    const coef = isV ? -42*r : -(12*r + 42);
+    $('insight').innerHTML = isV
+      ? `The radius always drops <strong>3 in every second</strong>, yet the volume drains fastest at the start (${f(-42*st.r0*PI,0)} in³/s at r = ${st.r0}) and the rate fades to <strong>0</strong> as r → 0, because <i>dV/dt</i> is proportional to <i>r</i>.`
+      : `Surface area keeps its top and bottom disks, so even as r → 0 it still loses area at <strong>−42π ≈ −131.9 in²/s</strong> through the side-wall term.`;
+    document.querySelectorAll('#ansBody tr').forEach(tr => tr.classList.toggle('on', st.r0 === 12 && isV && Math.abs(+tr.dataset.r - r) < 1));
+    const rs = c(r);
+    $('steps').innerHTML = isV ? `
+      <li><span class="step-t">List what you know</span><span class="eq"><i>h</i> = 7, <span class="chg"><i>dr/dt</i> = −3</span>, <span class="fix"><i>dh/dt</i> = 0</span></span></li>
+      <li><span class="step-t">Write the equation</span><span class="eq"><i>V</i> = π<i>r</i>²<i>h</i> = 7π<i>r</i>²</span><span class="note">h can go in early because it never changes. r cannot.</span></li>
+      <li><span class="step-t">Differentiate in <i>t</i></span><span class="eq"><i>dV/dt</i> = 14π<i>r</i> · <span class="chg"><i>dr/dt</i></span> = −42π<i>r</i></span><span class="note">14π<i>r</i> is 2π<i>rh</i>, the side wall. Each second the cylinder sheds a thin shell of it.</span></li>
+      <li class="live"><span class="step-t">At this moment, <i>r</i> = ${rs} in</span><span class="eq">−42π(${rs}) = ${c(coef)}π ≈ ${f(d,2)} in³/s</span><span class="note">Negative: the volume is shrinking.</span></li>`
+    : `
+      <li><span class="step-t">List what you know</span><span class="eq"><i>h</i> = 7, <span class="chg"><i>dr/dt</i> = −3</span>, <span class="fix"><i>dh/dt</i> = 0</span></span></li>
+      <li><span class="step-t">Write total surface area</span><span class="eq"><i>S</i> = 2π<i>r</i>² + 2π<i>rh</i> = 2π<i>r</i>² + 14π<i>r</i></span><span class="note">Two disks plus the side wall.</span></li>
+      <li><span class="step-t">Differentiate in <i>t</i></span><span class="eq"><i>dS/dt</i> = (4π<i>r</i> + 14π) · <span class="chg"><i>dr/dt</i></span> = −(12<i>r</i> + 42)π</span></li>
+      <li class="live"><span class="step-t">At this moment, <i>r</i> = ${rs} in</span><span class="eq">−(12·${rs} + 42)π = ${c(coef)}π ≈ ${f(d,2)} in²/s</span><span class="note">Negative: the surface area is shrinking.</span></li>`;
+  }
+  function draw(){ drawStage(); drawGraph(); }
+  function update(){ render(); draw(); }
+
+  /* ---------- answer table ---------- */
+  const ansR = [12, 10, 8, 6, 4, 2, 0];
+  $('ansBody').innerHTML = ansR.map(r => {
+    const t = (12 - r) / 3, d = -42*PI*r;
+    return `<tr data-r="${r}"><td><button class="load" data-r="${r}" aria-label="Load r = ${r} inches into the simulation">${r}</button></td><td>${f(t)}</td><td class="rate">${f(d,1)}</td><td class="barc"><span class="bar" style="--w:${(r/12*100).toFixed(1)}%"></span></td></tr>`;
+  }).join('');
+  $('ansBody').addEventListener('click', e => {
+    const b = e.target.closest('.load'); if (!b) return;
+    pause(); setQ('V'); st.r0 = 12; $('r0').value = 12;
+    st.t = (12 - +b.dataset.r) / 3; clearSheds(); update();
+    $('zA').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  /* ---------- playback ---------- */
+  let last = 0;
+  function loop(now){
+    if (!st.playing) return;
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    st.t = Math.min(tEnd(), st.t + dt * st.speed);
+    const rn = rAt(st.t);
+    if (!reduce && st.q === 'V' && lastShedR - rn >= SHED_EVERY){ sheds.push({ r: rn, born: now }); lastShedR = rn; }
+    if (st.t >= tEnd()){ st.playing = false; $('play').textContent = 'Replay'; }
+    update();
+    if (st.playing || sheds.length) requestAnimationFrame(st.playing ? loop : fade);
+  }
+  function fade(){ draw(); if (!st.playing && sheds.length) requestAnimationFrame(fade); }
+  function play(){ if (st.t >= tEnd()) st.t = 0; st.playing = true; $('play').textContent = 'Pause'; last = performance.now(); lastShedR = rAt(st.t); requestAnimationFrame(loop); }
+  function pause(){ st.playing = false; $('play').textContent = 'Play'; }
+
+  $('play').addEventListener('click', () => st.playing ? pause() : play());
+  $('reset').addEventListener('click', () => { pause(); st.t = 0; clearSheds(); update(); });
+  $('t').addEventListener('input', e => { pause(); st.t = +e.target.value; clearSheds(); update(); });
+  $('r0').addEventListener('input', e => { pause(); st.r0 = +e.target.value; st.t = Math.min(st.t, tEnd()); clearSheds(); update(); });
+  document.querySelectorAll('[data-sp]').forEach(b => b.addEventListener('click', () => {
+    st.speed = +b.dataset.sp; document.querySelectorAll('[data-sp]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  }));
+  $('solveForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const msg = $('solveMsg'), v = parseFloat($('rIn').value);
+    msg.classList.remove('err');
+    if (!isFinite(v) || v < 0 || v > 15){ msg.classList.add('err'); msg.textContent = 'Enter a radius from 0 to 15 inches.'; return; }
+    pause();
+    if (v > st.r0){ st.r0 = Math.min(15, Math.ceil(v)); $('r0').value = st.r0; }
+    st.t = (st.r0 - v) / 3; clearSheds(); update();
+    msg.textContent = `r = ${c(v)} in happens at t = ${f(st.t)} s from a start of r = ${st.r0} in. The answer is in the last step.`;
+  });
+  function setQ(q){ st.q = q; $('qV').setAttribute('aria-pressed', q==='V'); $('qS').setAttribute('aria-pressed', q==='S'); update(); }
+  $('qV').addEventListener('click', () => setQ('V'));
+  $('qS').addEventListener('click', () => setQ('S'));
+
+  function scrubFrom(e){
+    if (!plotBox) return;
+    const rect = graph.getBoundingClientRect(), x = e.clientX - rect.left;
+    st.t = Math.max(0, Math.min(tEnd(), (x - plotBox.L) / plotBox.pw * tEnd())); clearSheds(); update();
+  }
+  let dragging = false;
+  graph.addEventListener('pointerdown', e => { pause(); dragging = true; graph.setPointerCapture(e.pointerId); scrubFrom(e); });
+  graph.addEventListener('pointermove', e => { if (dragging) scrubFrom(e); });
+  graph.addEventListener('pointerup', () => { dragging = false; });
+
+  new ResizeObserver(draw).observe(stage);
+  new ResizeObserver(draw).observe(graph);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  document.fonts && document.fonts.ready.then(draw);
+
+  /* ---------- entrances ---------- */
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(en => {
+    if (en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+  }), { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }) : null;
+  document.querySelectorAll('.rise').forEach(el => io ? io.observe(el) : el.classList.add('in'));
+  setTimeout(() => document.querySelectorAll('.rise').forEach(el => el.classList.add('in')), 4000);
+
+  st.t = 1; update();
+  if (!reduce) setTimeout(() => { st.t = 0; update(); play(); }, 900);
+})();
+</script>
+<script>
+(() => {
+  /* ---------- sheet 2: two cars ---------- */
+  const VX = 60, VY = -40, Y0 = 34/3, T_END = Y0 / 40;      // hours
+  const BOOK = 2/15;                                          // x = 8, y = 6 at t = 8 min
+  const PI = Math.PI;
+  const $ = id => document.getElementById(id);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const minus = s => s.replace(/-/g, '−');
+  const f = (n, d = 2) => minus(n.toFixed(d));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stage = $('c2Stage'), graph = $('c2Graph');
+  const st = { t: 0, playing: false, speed: 1 };
+  const SECONDS_FULL = 24;                                    // 1× plays the 17 minutes in 24 s
+
+  const X = t => VX * t, Y = t => Math.max(0, Y0 + VY * t);
+  const th = t => Math.atan2(Y(t), X(t));
+  const dth = t => { const x = X(t), y = Y(t), z2 = x*x + y*y; return z2 ? (x*VY - y*VX) / z2 : NaN; };
+  const dz = t => { const x = X(t), y = Y(t), z = Math.hypot(x, y); return z ? (x*VX + y*VY) / z : NaN; };
+
+  const img = {};
+  ['road.jpg', 'car-yellow.png', 'car-white.png', 'driver-yellow.jpg', 'driver-white.jpg'].forEach(src => {
+    const i = new Image(); i.onload = draw; i.src = '../assets/img/' + src; img[src] = i;
+  });
+
+  function fit(cv){
+    const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+    if (cv.width !== Math.round(w*dpr) || cv.height !== Math.round(h*dpr)){ cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+    const ctx = cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return [ctx, w, h];
+  }
+  function tag(ctx, text, x, y, opts = {}){
+    const F = css('--mono');
+    ctx.font = `600 ${opts.size || 13}px ${F}`;
+    const w = ctx.measureText(text).width + 12, h = (opts.size || 13) + 9;
+    let bx = x - w/2, by = y - h/2;
+    const W = ctx.canvas.clientWidth, H = ctx.canvas.clientHeight;
+    bx = Math.max(4, Math.min(W - w - 4, bx)); by = Math.max(4, Math.min(H - h - 4, by));
+    ctx.fillStyle = opts.bg || css('--sheet'); ctx.globalAlpha = 0.94; ctx.fillRect(bx, by, w, h); ctx.globalAlpha = 1;
+    ctx.strokeStyle = opts.edge || css('--ink'); ctx.lineWidth = 1.2; ctx.strokeRect(bx + .5, by + .5, w - 1, h - 1);
+    ctx.fillStyle = opts.color || css('--ink'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, bx + w/2, by + h/2 + 0.5);
+  }
+  function line(ctx, x1, y1, x2, y2, col, w, dash){
+    ctx.save(); ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(10,14,18,.55)'; ctx.lineWidth = w + 3; if (dash) ctx.setLineDash(dash);
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    ctx.strokeStyle = col; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    ctx.restore();
+  }
+  function carSprite(ctx, im, cx, cy, len, rot){
+    if (!im.complete || !im.naturalWidth) return;
+    // the render is 5.6 m across and the car is 4.6 m long
+    const scale = len / (im.naturalWidth * 4.6 / 5.6), w = im.naturalWidth * scale, h = im.naturalHeight * scale;
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot);
+    ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = len * 0.08; ctx.shadowOffsetX = len * 0.06; ctx.shadowOffsetY = -len * 0.09;
+    ctx.drawImage(im, -w/2, -h/2, w, h); ctx.restore();
+  }
+  function badge(ctx, im, cx, cy, d, ring){
+    if (!im.complete || !im.naturalWidth) return;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 6; ctx.shadowOffsetY = 2;
+    ctx.fillStyle = ring; ctx.beginPath(); ctx.arc(cx, cy, d/2 + 3, 0, 2*Math.PI); ctx.fill();
+    ctx.shadowColor = 'transparent';
+    ctx.beginPath(); ctx.arc(cx, cy, d/2, 0, 2*Math.PI); ctx.clip();
+    ctx.drawImage(im, cx - d/2, cy - d/2, d, d);
+    ctx.restore();
+  }
+  function arrowHead(ctx, x, y, ang, col, s = 9){
+    ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x, y);
+    ctx.lineTo(x - s*Math.cos(ang - .5), y - s*Math.sin(ang - .5)); ctx.lineTo(x - s*Math.cos(ang + .5), y - s*Math.sin(ang + .5)); ctx.closePath(); ctx.fill();
+  }
+
+  function drawStage(){
+    const [ctx, W, H] = fit(stage);
+    ctx.clearRect(0, 0, W, H);
+    const road = img['road.jpg'];
+    if (road.complete && road.naturalWidth) ctx.drawImage(road, 0, 0, W, H);
+    else { ctx.fillStyle = '#6f8f4a'; ctx.fillRect(0, 0, W, H); }
+
+    const u = W / 16;                         // one scene unit in px (the render is 16 units wide)
+    const lane = 1.1 / 4 * u;                 // centre of a lane from the road's centre line
+    const Ix = 0.14 * W, Iy = 0.78 * H;
+    const s = Math.min(0.80 * W / X(T_END), 0.70 * H / Y0);
+    const Ox = Ix - lane, Oy = Iy + lane;     // right-angle corner where the two lanes cross
+    const x = X(st.t), y = Y(st.t);
+    const yx = Ox + x * s, yy = Oy;            // yellow car
+    const wx = Ox, wy = Oy - y * s;            // white car
+    const ink = css('--ink'), chg = '#ff8a3d', fix = '#7cc6ea';
+    const narrow = W < 520;
+
+    // legs and hypotenuse
+    line(ctx, Ox, Oy, yx, yy, '#ffffff', 2.5);
+    line(ctx, Ox, Oy, wx, wy, '#ffffff', 2.5);
+    line(ctx, yx, yy, wx, wy, chg, 3, [9, 6]);
+    // right-angle mark
+    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; const q = 10;
+    ctx.beginPath(); ctx.moveTo(Ox + q, Oy); ctx.lineTo(Ox + q, Oy - q); ctx.lineTo(Ox, Oy - q); ctx.stroke();
+
+    // cars
+    const carLen = 1.2 * u;
+    carSprite(ctx, img['car-white.png'], wx, wy, carLen, PI/2);
+    carSprite(ctx, img['car-yellow.png'], yx, yy, carLen, 0);
+    const bd = Math.max(30, Math.min(64, carLen * 0.62));
+    badge(ctx, img['driver-yellow.jpg'], wx, wy - 1, bd, '#ffffff');
+    badge(ctx, img['driver-white.jpg'], yx - carLen * 0.05, yy, bd, '#f2b705');
+
+    // velocity arrows
+    const aL = Math.max(26, carLen * 0.55);
+    if (x > 0.05){
+      ctx.strokeStyle = chg; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(yx + carLen*0.6, yy); ctx.lineTo(yx + carLen*0.6 + aL, yy); ctx.stroke();
+      arrowHead(ctx, yx + carLen*0.6 + aL + 4, yy, 0, chg);
+    }
+    if (y > 0.05){
+      ctx.strokeStyle = fix; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(wx, wy + carLen*0.6); ctx.lineTo(wx, wy + carLen*0.6 + aL*0.67); ctx.stroke();
+      arrowHead(ctx, wx, wy + carLen*0.6 + aL*0.67 + 4, PI/2, fix);
+    }
+
+    // θ arc at the yellow car
+    if (x > 0.2 && y > 0.05){
+      const a2 = Math.atan2(wy - yy, wx - yx), R = Math.min(64, Math.max(26, (x*s) * 0.32));
+      ctx.save(); ctx.strokeStyle = 'rgba(10,14,18,.55)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(yx, yy, R, a2, -PI, true); ctx.stroke();
+      ctx.strokeStyle = chg; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(yx, yy, R, a2, -PI, true); ctx.stroke(); ctx.restore();
+      const am = (a2 - PI) / 2;
+      const lr = R + (narrow ? 18 : 52);
+      tag(ctx, narrow ? 'θ' : `θ = ${f(th(st.t), 3)}`, yx + lr * Math.cos(am) - (narrow ? 0 : 10), yy + lr * Math.sin(am) - 4, { color: css('--crimson-text') });
+    }
+
+    // labels
+    tag(ctx, narrow ? 'x' : `x = ${f(x, 2)} mi`, Ox + x*s/2, Oy + 20, { size: narrow ? 12 : 13 });
+    tag(ctx, narrow ? 'y' : `y = ${f(y, 2)} mi`, Ox - (narrow ? 18 : 54), Oy - Math.max(y*s/2, carLen), { size: narrow ? 12 : 13 });
+    if (x > 0.2 && y > 0.2) tag(ctx, narrow ? 'z' : `z = ${f(Math.hypot(x, y), 2)} mi`, (yx + wx)/2 + (narrow ? 14 : 40), (yy + wy)/2 - (narrow ? 10 : 6), { color: css('--crimson-text'), size: narrow ? 12 : 13 });
+    if (!narrow){
+      if (x > 0.05) tag(ctx, '60 mph', yx + carLen*0.6 + aL + 40, yy, { size: 12 });
+      if (y > 0.05) tag(ctx, '40 mph', wx - 44, wy + carLen*0.6 + aL*0.5, { size: 12 });
+    }
+    // compass
+    const cxp = W - 30, cyp = 30;
+    ctx.fillStyle = css('--sheet'); ctx.globalAlpha = .9; ctx.beginPath(); ctx.arc(cxp, cyp, 18, 0, 2*PI); ctx.fill(); ctx.globalAlpha = 1;
+    ctx.strokeStyle = ink; ctx.lineWidth = 1.2; ctx.stroke();
+    ctx.fillStyle = ink; ctx.beginPath(); ctx.moveTo(cxp, cyp - 13); ctx.lineTo(cxp - 4, cyp); ctx.lineTo(cxp + 4, cyp); ctx.closePath(); ctx.fill();
+    ctx.font = `600 10px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('N', cxp, cyp + 8);
+    if (y <= 0) tag(ctx, 'The white car has reached the intersection: θ = 0', W/2, 24, { size: 12 });
+  }
+
+  /* ---------- graph of θ(t) ---------- */
+  let plot = null;
+  function niceStep(span, n){ const raw = span/n, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw/p; return (m<1.5?1:m<3?2:m<7?5:10)*p; }
+  function drawGraph(){
+    const [ctx, W, H] = fit(graph);
+    const ink = css('--ink'), soft = css('--ink-soft'), chg = css('--crimson'), chgT = css('--crimson-text'), grid = css('--c-grid'), rule = css('--c-rule'), F = css('--mono');
+    ctx.clearRect(0, 0, W, H);
+    const L = 54, R = 14, T = 16, B = 38, pw = W - L - R, ph = H - T - B; plot = { L, pw };
+    const tMaxM = T_END * 60, yMax = PI/2 * 1.06;
+    const Xp = m => L + m / tMaxM * pw, Yp = v => T + ph - v / yMax * ph;
+    ctx.font = `600 12px ${F}`; ctx.fillStyle = soft; ctx.lineWidth = 1.5;
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    [[0,'0'],[PI/8,'π/8'],[PI/4,'π/4'],[3*PI/8,'3π/8'],[PI/2,'π/2']].forEach(([v, l]) => {
+      ctx.strokeStyle = grid; ctx.beginPath(); ctx.moveTo(L, Yp(v)); ctx.lineTo(L + pw, Yp(v)); ctx.stroke(); ctx.fillText(l, L - 8, Yp(v));
+    });
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let m = 0; m <= tMaxM + 1e-9; m += 2) ctx.fillText(m, Xp(m), T + ph + 8);
+    ctx.strokeStyle = rule; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(L, T + ph); ctx.lineTo(L + pw, T + ph); ctx.stroke();
+    ctx.textAlign = 'right'; ctx.fillText('t (min)', L + pw, T + ph + 22);
+    ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    const path = (a, b) => { ctx.beginPath(); for (let i = 0; i <= 160; i++){ const t = a + (b - a) * i/160; const p = [Xp(t*60), Yp(th(t))]; i ? ctx.lineTo(...p) : ctx.moveTo(...p); } ctx.stroke(); };
+    ctx.strokeStyle = rule; path(st.t, T_END);
+    ctx.strokeStyle = ink; path(Math.min(1e-6, st.t), st.t);
+    // textbook instant marker
+    ctx.strokeStyle = soft; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(Xp(8), T); ctx.lineTo(Xp(8), T + ph); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = soft; ctx.font = `600 11.5px ${F}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('x = 8, y = 6', Xp(8) + 5, T + 2);
+    // tangent (slope in rad per minute on this axis)
+    const t0 = st.t, v0 = th(t0), m = dth(t0) / 60;
+    if (isFinite(m)){
+      ctx.save(); ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
+      ctx.setLineDash([9, 7]); ctx.strokeStyle = chg; ctx.lineWidth = 3;
+      const d = 3.2; ctx.beginPath(); ctx.moveTo(Xp(t0*60 - d), Yp(v0 - m*d)); ctx.lineTo(Xp(t0*60 + d), Yp(v0 + m*d)); ctx.stroke();
+      ctx.restore(); ctx.setLineDash([]);
+    }
+    ctx.fillStyle = chg; ctx.beginPath(); ctx.arc(Xp(t0*60), Yp(v0), 7, 0, 2*PI); ctx.fill();
+    ctx.fillStyle = chgT; ctx.font = `600 13px ${F}`; ctx.textBaseline = 'bottom';
+    const lbl = `slope ${f(dth(t0), 2)} rad/h`, tx = Xp(t0*60) + 12;
+    ctx.textAlign = tx + 170 > L + pw ? 'right' : 'left';
+    ctx.fillText(lbl, ctx.textAlign === 'right' ? Xp(t0*60) - 12 : tx, Yp(v0) - 10);
+  }
+
+  /* ---------- text ---------- */
+  function render(){
+    const t = st.t, x = X(t), y = Y(t), z = Math.hypot(x, y), d = dth(t), dzv = dz(t), a = th(t);
+    $('c2T').value = (t * 60).toFixed(2);
+    $('c2TOut').textContent = f(t*60, 1) + ' min'; $('c2Clock').textContent = `t = ${f(t*60, 1)} min = ${f(t, 3)} h`;
+    $('c2gX').innerHTML = `${f(x)} <small>mi</small>`;
+    $('c2gY').innerHTML = `${f(y)} <small>mi</small>`;
+    $('c2gZ').innerHTML = `${f(z)} <small>mi</small>`;
+    $('c2gDZ').innerHTML = `${isFinite(dzv) ? f(dzv, 1) : '—'} <small>mph</small>`;
+    $('c2gTh').innerHTML = `${f(a, 4)} <small>rad = ${f(a*180/PI, 1)}°</small>`;
+    $('c2gD').innerHTML = `${isFinite(d) ? f(d, 3) : '—'} <small>rad/h</small>`;
+    $('c2Insight').innerHTML = `Both cars push θ down: the yellow car lengthens <i>x</i> and the white car shortens <i>y</i>, so <i>dθ/dt</i> is <strong>always negative</strong>. It is steepest at the start (−60/y = ${f(-60/Y0, 2)} rad/h) and ends at −40/x as the white car arrives.`;
+    const xs = (+x.toFixed(2)).toString(), ys = (+y.toFixed(2)).toString(), z2 = x*x + y*y;
+    $('c2Steps').innerHTML = `
+      <li><span class="step-t">List what you know</span><span class="eq"><span class="chg"><i>dx/dt</i> = 60</span>, <span class="fix"><i>dy/dt</i> = −40</span></span><span class="note">y is shrinking because the white car is driving toward the intersection.</span></li>
+      <li><span class="step-t">Relate θ to x and y</span><span class="eq">tan <i>θ</i> = <i>y</i> / <i>x</i></span></li>
+      <li><span class="step-t">Differentiate in <i>t</i> (quotient rule)</span><span class="eq">sec²<i>θ</i> · <i>dθ/dt</i> = (<i>x</i>·<i>dy/dt</i> − <i>y</i>·<i>dx/dt</i>) / <i>x</i>²</span><span class="note">sec²θ = z² / x², so dθ/dt = (x·dy/dt − y·dx/dt) / z².</span></li>
+      <li><span class="step-t">Textbook instant, <i>x</i> = 8, <i>y</i> = 6</span><span class="eq">z = 10, dθ/dt = (8(−40) − 6(60)) / 100 = −6.8 rad/h</span></li>
+      <li class="live"><span class="step-t">At this moment, <i>x</i> = ${minus(xs)}, <i>y</i> = ${minus(ys)}</span><span class="eq">${z2 ? `(${minus(xs)}(−40) − ${minus(ys)}(60)) / ${f(z2, 2)} ≈ ${f(d, 3)} rad/h` : 'θ is undefined with both cars at the intersection'}</span><span class="note">Negative: the angle is closing.</span></li>`;
+    document.querySelectorAll('#c2Body tr').forEach(tr => tr.classList.toggle('on', Math.abs(+tr.dataset.m - t*60) < 0.5));
+  }
+  function draw(){ drawStage(); drawGraph(); }
+  function update(){ render(); draw(); }
+
+  /* ---------- answer table ---------- */
+  const rows = [0, 2, 4, 6, 8, 10, 12, 14, 16, T_END*60];
+  $('c2Body').innerHTML = rows.map(mn => {
+    const t = mn/60, d = dth(t), book = Math.abs(mn - 8) < 1e-9;
+    return `<tr data-m="${mn}"${book ? ' class="book"' : ''}><td><button class="load" data-m="${mn}" aria-label="Load t = ${f(mn,1)} minutes into the simulation">${f(mn, mn % 1 ? 1 : 0)}</button></td><td>${f(X(t))}</td><td>${f(Y(t))}</td><td>${f(th(t), 3)}</td><td class="rate">${isFinite(d) ? f(d, 2) : '—'}</td></tr>`;
+  }).join('');
+  $('c2Body').addEventListener('click', e => {
+    const b = e.target.closest('.load'); if (!b) return;
+    pause(); st.t = +b.dataset.m / 60; update();
+    $('zG').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  /* ---------- controls ---------- */
+  let last = 0;
+  function loop(now){
+    if (!st.playing) return;
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    st.t = Math.min(T_END, st.t + dt * st.speed * T_END / SECONDS_FULL);
+    if (st.t >= T_END){ st.playing = false; $('c2Play').textContent = 'Replay'; }
+    update(); if (st.playing) requestAnimationFrame(loop);
+  }
+  function play(){ if (st.t >= T_END) st.t = 0; st.playing = true; $('c2Play').textContent = 'Pause'; last = performance.now(); requestAnimationFrame(loop); }
+  function pause(){ st.playing = false; $('c2Play').textContent = 'Play'; }
+  $('c2Play').addEventListener('click', () => st.playing ? pause() : play());
+  $('c2Reset').addEventListener('click', () => { pause(); st.t = 0; update(); });
+  $('c2T').addEventListener('input', e => { pause(); st.t = +e.target.value / 60; update(); });
+  $('c2Book').addEventListener('click', () => { pause(); st.t = BOOK; update(); });
+  document.querySelectorAll('[data-sp2]').forEach(b => b.addEventListener('click', () => {
+    st.speed = +b.dataset.sp2; document.querySelectorAll('[data-sp2]').forEach(o => o.setAttribute('aria-pressed', o === b));
+  }));
+  $('c2Form').addEventListener('submit', e => {
+    e.preventDefault();
+    const msg = $('c2Msg'), v = parseFloat($('c2XIn').value);
+    msg.classList.remove('err');
+    const xMax = X(T_END);
+    if (!isFinite(v) || v < 0 || v > xMax){ msg.classList.add('err'); msg.textContent = `Enter a distance from 0 to ${f(xMax, 0)} miles: past that the white car has already arrived.`; return; }
+    pause(); st.t = v / VX; update();
+    msg.textContent = `x = ${minus((+v.toFixed(2)).toString())} mi happens at t = ${f(st.t*60, 1)} min, when y = ${f(Y(st.t))} mi. The answer is in the last step.`;
+  });
+  function scrubFrom(e){
+    if (!plot) return;
+    const r = graph.getBoundingClientRect();
+    st.t = Math.max(0, Math.min(T_END, (e.clientX - r.left - plot.L) / plot.pw * T_END)); update();
+  }
+  let drag = false;
+  graph.addEventListener('pointerdown', e => { pause(); drag = true; graph.setPointerCapture(e.pointerId); scrubFrom(e); });
+  graph.addEventListener('pointermove', e => { if (drag) scrubFrom(e); });
+  graph.addEventListener('pointerup', () => { drag = false; });
+
+  new ResizeObserver(draw).observe(stage); new ResizeObserver(draw).observe(graph);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  document.fonts && document.fonts.ready.then(draw);
+
+  // start on the textbook instant; play when the sheet scrolls into view
+  st.t = BOOK; update();
+  if (!reduce && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting){ io.disconnect(); setTimeout(() => { if (!st.playing){ st.t = 0; update(); play(); } }, 500); } }, { threshold: 0.4 });
+    io.observe(stage);
+  }
+})();
+</script>
+<script>
+(() => {
+  /* ---------- sheet 3: soap bubble.  V(t) = 8πt, so the problem's instant (V = 288π) is t = 36 s ---------- */
+  const PI = Math.PI, DV = 8 * PI, T_END = 72, BOOK = 36;
+  const $ = id => document.getElementById(id);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const minus = s => s.replace(/-/g, '−');
+  const f = (n, d = 2) => minus(n.toFixed(d));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stage = $('b3Stage'), graph = $('b3Graph');
+  const st = { t: BOOK, playing: false, speed: 2, q: 'R' };
+
+  const V = t => DV * t;
+  const R = t => Math.cbrt(6 * t);                 // (4/3)πr³ = 8πt  →  r³ = 6t
+  const S = t => 4 * PI * R(t) ** 2;
+  const dR = t => { const r = R(t); return r ? 2 / (r * r) : Infinity; };
+  const dS = t => { const r = R(t); return r ? 16 * PI / r : Infinity; };
+  const R_MAX = R(T_END);
+
+  const img = {};
+  ['yard.jpg', 'bubble.png'].forEach(src => { const i = new Image(); i.onload = draw; i.src = '../assets/img/' + src; img[src] = i; });
+
+  function fit(cv){
+    const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+    if (cv.width !== Math.round(w*dpr) || cv.height !== Math.round(h*dpr)){ cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+    const ctx = cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return [ctx, w, h];
+  }
+  function tag(ctx, text, x, y, opts = {}){
+    const size = opts.size || 13;
+    ctx.font = `600 ${size}px ${css('--mono')}`;
+    const w = ctx.measureText(text).width + 12, h = size + 9;
+    const W = ctx.canvas.clientWidth, H = ctx.canvas.clientHeight;
+    let bx = opts.align === 'left' ? x : x - w/2, by = y - h/2;
+    bx = Math.max(4, Math.min(W - w - 4, bx)); by = Math.max(4, Math.min(H - h - 4, by));
+    ctx.fillStyle = css('--sheet'); ctx.globalAlpha = 0.94; ctx.fillRect(bx, by, w, h); ctx.globalAlpha = 1;
+    ctx.strokeStyle = css('--ink'); ctx.lineWidth = 1.2; ctx.strokeRect(bx + .5, by + .5, w - 1, h - 1);
+    ctx.fillStyle = opts.color || css('--ink'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, bx + w/2, by + h/2 + 0.5);
+  }
+
+  function drawStage(){
+    const [ctx, W, H] = fit(stage);
+    ctx.clearRect(0, 0, W, H);
+    const yard = img['yard.jpg'];
+    if (yard.complete && yard.naturalWidth){
+      const s = Math.max(W / yard.naturalWidth, H / yard.naturalHeight), iw = yard.naturalWidth * s, ih = yard.naturalHeight * s;
+      ctx.drawImage(yard, (W - iw)/2, (H - ih)/2, iw, ih);
+    } else { ctx.fillStyle = '#5d7f45'; ctx.fillRect(0, 0, W, H); }
+
+    const narrow = W < 520;
+    const k = (0.40 * H) / R_MAX;                   // px per cm
+    const cx = W * (narrow ? 0.5 : 0.56), cy = H * 0.47;
+    const r = R(st.t), rp = r * k;
+    const chg = '#ff8a3d';
+
+    // the problem's instant, as a dashed ghost
+    ctx.save(); ctx.setLineDash([6, 6]); ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(cx, cy, 6 * k, 0, 2*PI); ctx.stroke(); ctx.restore();
+
+    // the shell of air added over the next second (drawn 6× thicker so it is visible)
+    if (rp > 2){
+      const th = Math.max(2.5, dR(st.t) * k * 6);
+      ctx.save(); ctx.globalAlpha = 0.55; ctx.strokeStyle = chg; ctx.lineWidth = th;
+      ctx.beginPath(); ctx.arc(cx, cy, rp + th/2, 0, 2*PI); ctx.stroke(); ctx.restore();
+    }
+    // the bubble: pure reflected light, added onto the scene
+    const b = img['bubble.png'];
+    if (b.complete && b.naturalWidth && rp > 0.5){
+      const d = rp * 2.1;
+      ctx.save(); ctx.globalCompositeOperation = 'screen'; ctx.drawImage(b, cx - d/2, cy - d/2, d, d); ctx.restore();
+    }
+    // radius
+    if (rp > 4){
+      ctx.save(); ctx.lineCap = 'round';
+      ctx.strokeStyle = 'rgba(10,14,18,.55)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + rp, cy); ctx.stroke();
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + rp, cy); ctx.stroke();
+      ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(cx, cy, 3.5, 0, 2*PI); ctx.fill(); ctx.restore();
+    }
+    tag(ctx, `r = ${f(r)} cm`, cx + Math.max(rp, 24) / 2, cy - 16);
+    if (!narrow){
+      tag(ctx, `V = ${f(st.t * 8, 1)}π cm³`, 12, 22, { align: 'left' });
+      tag(ctx, `+8π cm³ every second`, 12, 50, { align: 'left', color: css('--crimson-text'), size: 12 });
+      tag(ctx, 'dashed: V = 288π, r = 6', cx, cy - 6*k - 16, { size: 11.5 });
+    }
+    if (rp > 30) tag(ctx, `shell: 4πr² × ${f(dR(st.t), 3)} cm`, cx, cy + rp + 22, { color: css('--crimson-text'), size: 12 });
+
+    // ruler, bottom left, in centimetres
+    const rx = 14, ry = H - 34, len = Math.min(8, Math.floor((W * 0.42) / k)), rw = len * k;
+    ctx.fillStyle = 'rgba(251,251,249,.94)'; ctx.fillRect(rx - 6, ry - 6, rw + 12, 28);
+    ctx.strokeStyle = '#1c2a3a'; ctx.lineWidth = 1.2; ctx.strokeRect(rx - 5.5, ry - 5.5, rw + 11, 27);
+    ctx.fillStyle = '#1c2a3a'; ctx.font = `600 10.5px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let i = 0; i <= len * 2; i++){
+      const x = rx + i * k / 2, big = i % 2 === 0;
+      ctx.beginPath(); ctx.moveTo(x, ry - 5); ctx.lineTo(x, ry - 5 + (big ? 8 : 5)); ctx.stroke();
+      if (big && (len <= 6 || i % 4 === 0)) ctx.fillText(i/2, x, ry + 5);
+    }
+    ctx.textAlign = 'left'; ctx.fillText('cm', rx + rw + 10, ry + 5);
+  }
+
+  /* ---------- graph ---------- */
+  let plot = null;
+  function niceStep(span, n){ const raw = span/n, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw/p; return (m<1.5?1:m<3?2:m<7?5:10)*p; }
+  function drawGraph(){
+    const [ctx, W, H] = fit(graph);
+    const ink = css('--ink'), soft = css('--ink-soft'), chg = css('--crimson'), chgT = css('--crimson-text'), grid = css('--c-grid'), rule = css('--c-rule'), F = css('--mono');
+    ctx.clearRect(0, 0, W, H);
+    const isR = st.q === 'R', Qf = isR ? R : S, dQ = isR ? dR : dS;
+    const L = 56, Rr = 14, T = 16, B = 38, pw = W - L - Rr, ph = H - T - B; plot = { L, pw };
+    const yMax = Qf(T_END) * 1.06;
+    const Xp = t => L + t / T_END * pw, Yp = v => T + ph - v / yMax * ph;
+    ctx.font = `600 12px ${F}`; ctx.fillStyle = soft; ctx.lineWidth = 1.5;
+    const ys = niceStep(yMax, 5);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let v = 0; v <= yMax; v += ys){ ctx.strokeStyle = grid; ctx.beginPath(); ctx.moveTo(L, Yp(v)); ctx.lineTo(L + pw, Yp(v)); ctx.stroke(); ctx.fillText(Math.round(v * 10) / 10, L - 8, Yp(v)); }
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let t = 0; t <= T_END; t += 12) ctx.fillText(t, Xp(t), T + ph + 8);
+    ctx.strokeStyle = rule; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(L, T + ph); ctx.lineTo(L + pw, T + ph); ctx.stroke();
+    ctx.textAlign = 'right'; ctx.fillText('t (s)', L + pw, T + ph + 22);
+    ctx.save(); ctx.translate(13, T + ph/2); ctx.rotate(-PI/2); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(isR ? 'r (cm)' : 'S (cm²)', 0, 0); ctx.restore();
+    ctx.strokeStyle = soft; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(Xp(BOOK), T); ctx.lineTo(Xp(BOOK), T + ph); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = soft; ctx.font = `600 11.5px ${F}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('V = 288π', Xp(BOOK) + 5, T + 2);
+    ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    const path = (a, b) => { ctx.beginPath(); for (let i = 0; i <= 160; i++){ const t = a + (b - a) * i/160; const p = [Xp(t), Yp(Qf(t))]; i ? ctx.lineTo(...p) : ctx.moveTo(...p); } ctx.stroke(); };
+    ctx.strokeStyle = rule; path(st.t, T_END);
+    ctx.strokeStyle = ink; path(0, st.t);
+    const t0 = st.t, v0 = Qf(t0), m = dQ(t0);
+    if (isFinite(m)){
+      ctx.save(); ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
+      ctx.setLineDash([9, 7]); ctx.strokeStyle = chg; ctx.lineWidth = 3;
+      const d = 14; ctx.beginPath(); ctx.moveTo(Xp(t0 - d), Yp(v0 - m*d)); ctx.lineTo(Xp(t0 + d), Yp(v0 + m*d)); ctx.stroke();
+      ctx.restore(); ctx.setLineDash([]);
+    }
+    ctx.fillStyle = chg; ctx.beginPath(); ctx.arc(Xp(t0), Yp(v0), 7, 0, 2*PI); ctx.fill();
+    ctx.fillStyle = chgT; ctx.font = `600 13px ${F}`; ctx.textBaseline = 'top';
+    const lbl = `slope ${isFinite(m) ? f(m, isR ? 4 : 2) : '∞'} ${isR ? 'cm/s' : 'cm²/s'}`, tx = Xp(t0) + 12;
+    ctx.textAlign = tx + 190 > L + pw ? 'right' : 'left';
+    ctx.fillText(lbl, ctx.textAlign === 'right' ? Xp(t0) - 12 : tx, Yp(v0) + 10);
+  }
+
+  /* ---------- text ---------- */
+  function render(){
+    const t = st.t, r = R(t), dr = dR(t), ds = dS(t);
+    $('b3T').value = t.toFixed(1); $('b3TOut').textContent = f(t, 1) + ' s'; $('b3Clock').textContent = `t = ${f(t, 1)} s`;
+    $('b3gV').innerHTML = `${f(t * 8, 1)}π <small>cm³</small>`;
+    $('b3gR').innerHTML = `${f(r, 3)} <small>cm</small>`;
+    $('b3gS').innerHTML = `${f(S(t), 1)} <small>cm²</small>`;
+    $('b3gDR').innerHTML = `${isFinite(dr) ? f(dr, 4) : '∞'} <small>cm/s</small>`;
+    $('b3gDS').innerHTML = `${isFinite(ds) ? f(ds, 2) : '∞'} <small>cm²/s</small>`;
+    $('b3GraphTitle').textContent = st.q === 'R' ? 'Radius over time' : 'Surface area over time';
+    $('b3Lg').textContent = st.q === 'R' ? 'r(t), cm' : 'S(t), cm²';
+    $('b3Insight').innerHTML = `Every second adds the same <strong>8π cm³</strong> of air, but it is spread as a thin shell over the whole surface, 4πr². So <i>dr/dt</i> = 8π / 4πr² = 2/r²: double the radius and the radius grows <strong>four times slower</strong>.`;
+    const rs = minus((+r.toFixed(3)).toString());
+    $('b3Steps').innerHTML = `
+      <li><span class="step-t">List what you know</span><span class="eq"><span class="chg"><i>dV/dt</i> = 8π</span>, <i>V</i> = 288π</span></li>
+      <li><span class="step-t">(a) Solve for the radius</span><span class="eq">(4/3)π<i>r</i>³ = 288π → <i>r</i>³ = 216 → <i>r</i> = 6 cm</span></li>
+      <li><span class="step-t">(b) Differentiate V in <i>t</i></span><span class="eq"><i>dV/dt</i> = 4π<i>r</i>² · <i>dr/dt</i></span><span class="eq">8π = 4π(36) · <i>dr/dt</i> → <i>dr/dt</i> = 1/18 ≈ 0.0556 cm/s</span><span class="note">4πr² is the surface area: the new air spreads over the whole skin.</span></li>
+      <li><span class="step-t">(c) Differentiate S in <i>t</i></span><span class="eq"><i>dS/dt</i> = 8π<i>r</i> · <i>dr/dt</i> = 8π(6)(1/18)</span><span class="eq"><i>dS/dt</i> = 8π/3 ≈ 8.38 cm²/s</span></li>
+      <li class="live"><span class="step-t">At this moment, <i>r</i> = ${rs} cm</span><span class="eq">${r ? `dr/dt = 2/${rs}² ≈ ${f(dr, 4)} cm/s` : 'r = 0: the bubble has not started'}</span><span class="eq">${r ? `dS/dt = 16π/${rs} ≈ ${f(ds, 2)} cm²/s` : ''}</span><span class="note">Both positive: the bubble is still growing.</span></li>`;
+    document.querySelectorAll('#b3Body tr').forEach(tr => tr.classList.toggle('on', Math.abs(+tr.dataset.r - r) < 0.08));
+  }
+  function draw(){ drawStage(); drawGraph(); }
+  function update(){ render(); draw(); }
+
+  /* ---------- answer table ---------- */
+  const radii = [1, 2, 3, 4, 5, 6, 7];
+  $('b3Body').innerHTML = radii.map(r => {
+    const t = r ** 3 / 6, vpi = 4 * r ** 3 / 3, vtxt = Number.isInteger(vpi) ? `${vpi}π` : `${f(vpi, 2)}π`;
+    return `<tr data-r="${r}"${r === 6 ? ' class="book"' : ''}><td><button class="load" data-r="${r}" aria-label="Load r = ${r} centimeters into the simulation">${r}</button></td><td>${vtxt}</td><td>${f(t, 2)}</td><td class="rate">${f(2 / r ** 2, 4)}</td><td>${f(16 * PI / r, 2)}</td></tr>`;
+  }).join('');
+  $('b3Body').addEventListener('click', e => {
+    const b = e.target.closest('.load'); if (!b) return;
+    pause(); st.t = (+b.dataset.r) ** 3 / 6; update();
+    $('zL').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  /* ---------- controls ---------- */
+  let last = 0;
+  function loop(now){
+    if (!st.playing) return;
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    st.t = Math.min(T_END, st.t + dt * st.speed);
+    if (st.t >= T_END){ st.playing = false; $('b3Play').textContent = 'Replay'; }
+    update(); if (st.playing) requestAnimationFrame(loop);
+  }
+  function play(){ if (st.t >= T_END) st.t = 0; st.playing = true; $('b3Play').textContent = 'Pause'; last = performance.now(); requestAnimationFrame(loop); }
+  function pause(){ st.playing = false; $('b3Play').textContent = 'Play'; }
+  $('b3Play').addEventListener('click', () => st.playing ? pause() : play());
+  $('b3Reset').addEventListener('click', () => { pause(); st.t = 0; update(); });
+  $('b3T').addEventListener('input', e => { pause(); st.t = +e.target.value; update(); });
+  $('b3Book').addEventListener('click', () => { pause(); st.t = BOOK; update(); });
+  document.querySelectorAll('[data-sp3]').forEach(b => b.addEventListener('click', () => {
+    st.speed = +b.dataset.sp3; document.querySelectorAll('[data-sp3]').forEach(o => o.setAttribute('aria-pressed', o === b));
+  }));
+  const setQ = q => { st.q = q; $('b3qR').setAttribute('aria-pressed', q === 'R'); $('b3qS').setAttribute('aria-pressed', q === 'S'); update(); };
+  $('b3qR').addEventListener('click', () => setQ('R'));
+  $('b3qS').addEventListener('click', () => setQ('S'));
+  $('b3Form').addEventListener('submit', e => {
+    e.preventDefault();
+    const msg = $('b3Msg'), v = parseFloat($('b3VIn').value);
+    msg.classList.remove('err');
+    if (!isFinite(v) || v <= 0 || v > 576){ msg.classList.add('err'); msg.textContent = 'Enter a volume above 0 and up to 576 (times π cm³).'; return; }
+    pause(); st.t = v / 8; update();
+    msg.textContent = `V = ${minus((+v.toFixed(2)).toString())}π cm³ happens at t = ${f(st.t, 1)} s, when r = ${f(R(st.t), 3)} cm. The answers are in the last step.`;
+  });
+  function scrubFrom(e){
+    if (!plot) return;
+    const rc = graph.getBoundingClientRect();
+    st.t = Math.max(0, Math.min(T_END, (e.clientX - rc.left - plot.L) / plot.pw * T_END)); update();
+  }
+  let drag = false;
+  graph.addEventListener('pointerdown', e => { pause(); drag = true; graph.setPointerCapture(e.pointerId); scrubFrom(e); });
+  graph.addEventListener('pointermove', e => { if (drag) scrubFrom(e); });
+  graph.addEventListener('pointerup', () => { drag = false; });
+
+  new ResizeObserver(draw).observe(stage); new ResizeObserver(draw).observe(graph);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  document.fonts && document.fonts.ready.then(draw);
+
+  update();
+  if (!reduce && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting){ io.disconnect(); setTimeout(() => { if (!st.playing){ st.t = 0; update(); play(); } }, 500); } }, { threshold: 0.4 });
+    io.observe(stage);
+  }
+})();
+</script>
+<script>
+(() => {
+  /* ---------- sheet 4: draining tank.  h(t) = 11 − 0.1t, V = 16πh, dV/dt = −1.6π ---------- */
+  const PI = Math.PI, H0 = 11, DH = -0.1, T_END = 110, DV = 16 * PI * DH;
+  const GEO = {"base": [0.43333, 0.88637], "top": [0.43333, 0.17802], "right": [0.6, 0.88637], "front": [0.43333, 0.95539], "spout": [0.725, 0.88122], "grate": [0.725, 0.88637], "R": 4.0, "H": 11.0, "aspect": 1.6};
+  const $ = id => document.getElementById(id);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const minus = s => s.replace(/-/g, '−');
+  const f = (n, d = 2) => minus(n.toFixed(d));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stage = $('w4Stage'), graph = $('w4Graph');
+  const st = { t: 0, playing: false, speed: 5, q: 'V' };
+  const Hf = t => Math.max(0, H0 + DH * t), Vf = t => 16 * PI * Hf(t);
+
+  const img = {};
+  ['tank-bg.jpg', 'water-mul.png', 'water-hl.png'].forEach(src => { const i = new Image(); i.onload = draw; i.src = '../assets/img/' + src; img[src] = i; });
+  const ready = k => img[k].complete && img[k].naturalWidth;
+
+  function fit(cv){
+    const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+    if (cv.width !== Math.round(w*dpr) || cv.height !== Math.round(h*dpr)){ cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+    const ctx = cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return [ctx, w, h];
+  }
+  function tag(ctx, text, x, y, opts = {}){
+    const size = opts.size || 13;
+    ctx.font = `600 ${size}px ${css('--mono')}`;
+    const w = ctx.measureText(text).width + 12, h = size + 9;
+    const W = ctx.canvas.clientWidth, H = ctx.canvas.clientHeight;
+    let bx = opts.align === 'left' ? x : opts.align === 'right' ? x - w : x - w/2, by = y - h/2;
+    bx = Math.max(4, Math.min(W - w - 4, bx)); by = Math.max(4, Math.min(H - h - 4, by));
+    ctx.fillStyle = css('--sheet'); ctx.globalAlpha = 0.94; ctx.fillRect(bx, by, w, h); ctx.globalAlpha = 1;
+    ctx.strokeStyle = css('--ink'); ctx.lineWidth = 1.2; ctx.strokeRect(bx + .5, by + .5, w - 1, h - 1);
+    ctx.fillStyle = opts.color || css('--ink'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, bx + w/2, by + h/2 + 0.5);
+  }
+
+  function drawStage(now){
+    const [ctx, W, H] = fit(stage);
+    ctx.clearRect(0, 0, W, H);
+    if (ready('tank-bg.jpg')) ctx.drawImage(img['tank-bg.jpg'], 0, 0, W, H); else { ctx.fillStyle = '#b9bcbf'; ctx.fillRect(0, 0, W, H); }
+    const cx = GEO.base[0] * W, by = GEO.base[1] * H, ty = GEO.top[1] * H;
+    const rx = (GEO.right[0] - GEO.base[0]) * W, ry = (GEO.front[1] - GEO.base[1]) * H;
+    const yAt = z => by + (ty - by) * z / GEO.H;
+    const h = Hf(st.t), ly = yAt(h);
+    const narrow = W < 520;
+
+    // water: the rendered column, clipped to the current level
+    if (h > 0.001){
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(cx, by, rx, ry, 0, 0, 2*PI);
+      ctx.rect(cx - rx, ly, 2*rx, by - ly);
+      ctx.ellipse(cx, ly, rx, ry, 0, 0, 2*PI);
+      ctx.clip('nonzero');
+      if (ready('water-mul.png')){ ctx.globalCompositeOperation = 'multiply'; ctx.drawImage(img['water-mul.png'], 0, 0, W, H); }
+      if (ready('water-hl.png')){ ctx.globalCompositeOperation = 'screen'; ctx.globalAlpha = 0.8; ctx.drawImage(img['water-hl.png'], 0, 0, W, H); }
+      ctx.restore();
+      // the water surface
+      ctx.save();
+      ctx.fillStyle = 'rgba(150,205,222,.42)'; ctx.beginPath(); ctx.ellipse(cx, ly, rx, ry, 0, 0, 2*PI); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.ellipse(cx, ly, rx, ry, 0, 0, PI); ctx.stroke();
+      ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(cx, ly, rx * 0.97, ry * 0.94, 0, PI, 2*PI); ctx.stroke();
+      // gentle ripples while draining
+      if (st.playing && !reduce){
+        const ph = (now || performance.now()) / 1400;
+        for (let k = 0; k < 2; k++){
+          const p = (ph + k/2) % 1;
+          ctx.strokeStyle = `rgba(255,255,255,${0.35 * (1 - p)})`; ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.ellipse(cx + rx * 0.25, ly, rx * 0.25 * p + 4, ry * 0.25 * p + 1.5, 0, 0, 2*PI); ctx.stroke();
+        }
+      }
+      ctx.restore();
+    }
+
+    // water moving through the drain pipe
+    if (h > 0.001){
+      const py = yAt(0.45), x0 = cx + rx, x1 = GEO.spout[0] * W;
+      ctx.save(); ctx.strokeStyle = 'rgba(120,200,235,.95)'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+      ctx.setLineDash([7, 9]); ctx.lineDashOffset = st.playing && !reduce ? -((now || performance.now()) / 30) % 16 : 0;
+      ctx.beginPath(); ctx.moveTo(x0 + 4, py); ctx.lineTo(x1, py); ctx.stroke(); ctx.restore();
+      if (!narrow) tag(ctx, 'drain', (x0 + x1) / 2, py - 18, { size: 11.5 });
+    }
+
+    // height ruler in feet, left of the tank
+    const rxl = cx - rx - (narrow ? 26 : 44);
+    ctx.save();
+    ctx.fillStyle = 'rgba(251,251,249,.94)'; ctx.fillRect(rxl - 6, ty - 8, 30, by - ty + 16);
+    ctx.strokeStyle = '#1c2a3a'; ctx.lineWidth = 1.2; ctx.strokeRect(rxl - 5.5, ty - 7.5, 29, by - ty + 15);
+    ctx.fillStyle = '#1c2a3a'; ctx.font = `600 10.5px ${css('--mono')}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    for (let z = 0; z <= GEO.H * 2; z++){
+      const y = yAt(z / 2), big = z % 2 === 0;
+      ctx.beginPath(); ctx.moveTo(rxl - 5, y); ctx.lineTo(rxl - 5 + (big ? 8 : 5), y); ctx.stroke();
+      if (big && (!narrow || z % 4 === 0)) ctx.fillText(z / 2, rxl + 6, y);
+    }
+    ctx.textAlign = 'center'; ctx.fillText('ft', rxl + 9, ty - 16);
+    ctx.restore();
+
+    // level marker: ruler to water
+    ctx.save(); ctx.strokeStyle = '#d9631e'; ctx.lineWidth = 2; ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.moveTo(rxl + 24, ly); ctx.lineTo(cx - rx * 0.6, ly); ctx.stroke(); ctx.restore();
+    tag(ctx, `h = ${f(h, 2)} ft`, rxl - 8, ly, { align: 'right', color: css('--crimson-text') });
+    if (!narrow){
+      tag(ctx, 'dh/dt = −0.1 ft/s', rxl - 8, ly + 26, { align: 'right', size: 11.5 });
+      tag(ctx, `V = 16π(${f(h, 2)}) = ${f(Vf(st.t), 1)} ft³`, W - 10, 22, { align: 'right' });
+      tag(ctx, 'dV/dt = −1.6π ft³/s', W - 10, 50, { align: 'right', color: css('--crimson-text'), size: 12 });
+      tag(ctx, 'r = 4 ft', cx + rx / 2, by + ry + 16, { size: 12, color: css('--fixed') });
+    }
+    if (h <= 0.001) tag(ctx, 'Empty at t = 110 s', cx, (ty + by) / 2);
+    // radius line on the base
+    ctx.save(); ctx.strokeStyle = '#2f6f8f'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(cx, by); ctx.lineTo(cx + rx, by); ctx.stroke(); ctx.restore();
+  }
+
+  /* ---------- graph ---------- */
+  let plot = null;
+  function niceStep(span, n){ const raw = span/n, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw/p; return (m<1.5?1:m<3?2:m<7?5:10)*p; }
+  function drawGraph(){
+    const [ctx, W, H] = fit(graph);
+    const ink = css('--ink'), soft = css('--ink-soft'), chg = css('--crimson'), chgT = css('--crimson-text'), grid = css('--c-grid'), rule = css('--c-rule'), F = css('--mono');
+    ctx.clearRect(0, 0, W, H);
+    const isV = st.q === 'V', Qf = isV ? Vf : Hf, m = isV ? DV : DH;
+    const L = 58, Rr = 14, T = 16, B = 38, pw = W - L - Rr, ph = H - T - B; plot = { L, pw };
+    const yMax = Qf(0) * 1.06;
+    const Xp = t => L + t / T_END * pw, Yp = v => T + ph - v / yMax * ph;
+    ctx.font = `600 12px ${F}`; ctx.fillStyle = soft; ctx.lineWidth = 1.5;
+    const ys = niceStep(yMax, 5);
+    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let v = 0; v <= yMax; v += ys){ ctx.strokeStyle = grid; ctx.beginPath(); ctx.moveTo(L, Yp(v)); ctx.lineTo(L + pw, Yp(v)); ctx.stroke(); ctx.fillText(Math.round(v), L - 8, Yp(v)); }
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let t = 0; t <= T_END; t += 10) ctx.fillText(t, Xp(t), T + ph + 8);
+    ctx.strokeStyle = rule; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(L, T + ph); ctx.lineTo(L + pw, T + ph); ctx.stroke();
+    ctx.textAlign = 'right'; ctx.fillText('t (s)', L + pw, T + ph + 22);
+    ctx.save(); ctx.translate(13, T + ph/2); ctx.rotate(-PI/2); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(isV ? 'V (ft³)' : 'h (ft)', 0, 0); ctx.restore();
+    ctx.lineWidth = 4; ctx.lineCap = 'round';
+    ctx.strokeStyle = rule; ctx.beginPath(); ctx.moveTo(Xp(st.t), Yp(Qf(st.t))); ctx.lineTo(Xp(T_END), Yp(Qf(T_END))); ctx.stroke();
+    ctx.strokeStyle = ink; ctx.beginPath(); ctx.moveTo(Xp(0), Yp(Qf(0))); ctx.lineTo(Xp(st.t), Yp(Qf(st.t))); ctx.stroke();
+    const t0 = st.t, v0 = Qf(t0);
+    ctx.save(); ctx.beginPath(); ctx.rect(L, T, pw, ph); ctx.clip();
+    ctx.setLineDash([9, 7]); ctx.strokeStyle = chg; ctx.lineWidth = 3;
+    const d = 22; ctx.beginPath(); ctx.moveTo(Xp(t0 - d), Yp(v0 - m*d)); ctx.lineTo(Xp(t0 + d), Yp(v0 + m*d)); ctx.stroke();
+    ctx.restore(); ctx.setLineDash([]);
+    ctx.fillStyle = chg; ctx.beginPath(); ctx.arc(Xp(t0), Yp(v0), 7, 0, 2*PI); ctx.fill();
+    ctx.fillStyle = chgT; ctx.font = `600 13px ${F}`; ctx.textBaseline = 'bottom';
+    const lbl = `slope ${f(m, isV ? 2 : 1)} ${isV ? 'ft³/s' : 'ft/s'}`, tx = Xp(t0) + 12;
+    ctx.textAlign = tx + 170 > L + pw ? 'right' : 'left';
+    ctx.fillText(lbl, ctx.textAlign === 'right' ? Xp(t0) - 12 : tx, Yp(v0) - 10);
+  }
+
+  /* ---------- text ---------- */
+  function render(){
+    const t = st.t, h = Hf(t);
+    $('w4T').value = t.toFixed(1); $('w4TOut').textContent = f(t, 1) + ' s'; $('w4Clock').textContent = `t = ${f(t, 1)} s`;
+    $('w4gH').innerHTML = `${f(h)} <small>ft</small>`;
+    $('w4gV').innerHTML = `${f(Vf(t), 1)} <small>ft³</small>`;
+    $('w4gD').innerHTML = `${f(DV, 3)} <small>ft³/s</small>`;
+    $('w4GraphTitle').textContent = st.q === 'V' ? 'Volume over time' : 'Height over time';
+    $('w4Lg').textContent = st.q === 'V' ? 'V(t), ft³' : 'h(t), ft';
+    const hs = minus((+h.toFixed(2)).toString());
+    $('w4Steps').innerHTML = `
+      <li><span class="step-t">(a) Relate all the variables</span><span class="eq"><i>V</i> = π<i>r</i>²<i>h</i></span></li>
+      <li><span class="step-t">(b) Replace what stays constant</span><span class="eq"><span class="fix"><i>r</i> = 4</span> → <i>V</i> = π(4)²<i>h</i> = 16π<i>h</i></span><span class="note">The radius never changes, so it goes in before differentiating. h cannot: it is falling.</span></li>
+      <li><span class="step-t">(c) Differentiate in <i>t</i> (chain rule)</span><span class="eq"><i>dV/dt</i> = 16π · <span class="chg"><i>dh/dt</i></span></span></li>
+      <li><span class="step-t">(d) Plug in and solve</span><span class="eq"><i>dV/dt</i> = 16π(−0.1) = −1.6π ≈ −5.03 ft³/s</span><span class="note">Negative: the tank is losing water.</span></li>
+      <li class="live"><span class="step-t">At this moment, <i>h</i> = ${hs} ft</span><span class="eq">dV/dt = 16π(−0.1) = −1.6π ≈ ${f(DV, 3)} ft³/s</span><span class="note">h does not appear in dV/dt, so the answer is the same at every level.</span></li>`;
+    document.querySelectorAll('#w4Body tr').forEach(tr => tr.classList.toggle('on', Math.abs(+tr.dataset.t - t) < 5));
+  }
+  function draw(now){ drawStage(now); drawGraph(); }
+  function update(now){ render(); draw(now); }
+
+  /* ---------- answer table ---------- */
+  const times = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110];
+  $('w4Body').innerHTML = times.map(t => `<tr data-t="${t}"><td><button class="load" data-t="${t}" aria-label="Load t = ${t} seconds into the simulation">${t}</button></td><td>${f(Hf(t), 1)}</td><td>${f(16 * Hf(t), 1)}π</td><td class="rate">−1.6π</td></tr>`).join('');
+  $('w4Body').addEventListener('click', e => {
+    const b = e.target.closest('.load'); if (!b) return;
+    pause(); st.t = +b.dataset.t; update();
+    $('zQ').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  /* ---------- controls ---------- */
+  let last = 0;
+  function loop(now){
+    if (!st.playing) return;
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    st.t = Math.min(T_END, st.t + dt * st.speed);
+    if (st.t >= T_END){ st.playing = false; $('w4Play').textContent = 'Replay'; }
+    update(now); if (st.playing) requestAnimationFrame(loop);
+  }
+  function play(){ if (st.t >= T_END) st.t = 0; st.playing = true; $('w4Play').textContent = 'Pause'; last = performance.now(); requestAnimationFrame(loop); }
+  function pause(){ st.playing = false; $('w4Play').textContent = 'Play'; }
+  $('w4Play').addEventListener('click', () => st.playing ? pause() : play());
+  $('w4Reset').addEventListener('click', () => { pause(); st.t = 0; update(); });
+  $('w4T').addEventListener('input', e => { pause(); st.t = +e.target.value; update(); });
+  document.querySelectorAll('[data-sp4]').forEach(b => b.addEventListener('click', () => {
+    st.speed = +b.dataset.sp4; document.querySelectorAll('[data-sp4]').forEach(o => o.setAttribute('aria-pressed', o === b));
+  }));
+  const setQ = q => { st.q = q; $('w4qV').setAttribute('aria-pressed', q === 'V'); $('w4qH').setAttribute('aria-pressed', q === 'H'); update(); };
+  $('w4qV').addEventListener('click', () => setQ('V'));
+  $('w4qH').addEventListener('click', () => setQ('H'));
+  $('w4Form').addEventListener('submit', e => {
+    e.preventDefault();
+    const msg = $('w4Msg'), v = parseFloat($('w4HIn').value);
+    msg.classList.remove('err');
+    if (!isFinite(v) || v < 0 || v > 11){ msg.classList.add('err'); msg.textContent = 'Enter a height from 0 to 11 feet.'; return; }
+    pause(); st.t = (H0 - v) / 0.1; update();
+    msg.textContent = `h = ${minus((+v.toFixed(2)).toString())} ft happens at t = ${f(st.t, 1)} s. dV/dt there is still −1.6π ft³/s.`;
+  });
+  function scrubFrom(e){
+    if (!plot) return;
+    const rc = graph.getBoundingClientRect();
+    st.t = Math.max(0, Math.min(T_END, (e.clientX - rc.left - plot.L) / plot.pw * T_END)); update();
+  }
+  let drag = false;
+  graph.addEventListener('pointerdown', e => { pause(); drag = true; graph.setPointerCapture(e.pointerId); scrubFrom(e); });
+  graph.addEventListener('pointermove', e => { if (drag) scrubFrom(e); });
+  graph.addEventListener('pointerup', () => { drag = false; });
+
+  new ResizeObserver(() => draw()).observe(stage); new ResizeObserver(() => draw()).observe(graph);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw());
+  new MutationObserver(() => draw()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  document.fonts && document.fonts.ready.then(() => draw());
+
+  st.t = 30; update();
+  if (!reduce && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting){ io.disconnect(); setTimeout(() => { if (!st.playing){ st.t = 0; update(); play(); } }, 500); } }, { threshold: 0.4 });
+    io.observe(stage);
+  }
+})();
+</script>
+<script>
+(() => {
+  /* ---------- sheet 5: Velocity Raptor.  x(t) = x0 + v0 t + ½ a t², stops at the ends of the trail ---------- */
+  const PI = Math.PI, LIM = 10, T_MAX = 12, DRAW_SCALE = 3.4, STRIDE = 1.1;
+  const BG = {"origin": [0.5, 0.76407], "ten_m": [0.91667, 0.76407], "aspect": 2.2857142857142856}, RG = {"hip_ground": [0.60417, 0.90931], "one_m_right": [1.02083, 0.90931], "frame_w_m": 2.4};
+  const $ = id => document.getElementById(id);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const minus = s => s.replace(/-/g, '−');
+  const f = (n, d = 2) => minus((Math.abs(n) < 5e-10 ? 0 : n).toFixed(d));
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stage = $('r5Stage'), graph = $('r5Graph');
+
+  const CASES = {
+    xp_vp: { x0: 1.5, v0: 1.6, a: 0, name: 'away from origin' },
+    xn_vp: { x0: -9, v0: 1.6, a: 0, name: 'towards the origin' },
+    xp_vn: { x0: 9, v0: -1.6, a: 0, name: 'towards the origin' },
+    xn_vn: { x0: -1.5, v0: -1.6, a: 0, name: 'away from origin' },
+    vp_ap: { x0: -9, v0: 0.6, a: 0.6, name: 'speeding up, moving right' },
+    vp_an: { x0: -9, v0: 4.5, a: -1.2, name: 'slowing down, moving right' },
+    vn_ap: { x0: 9, v0: -4.5, a: 1.2, name: 'slowing down, moving left' },
+    vn_an: { x0: 9, v0: -0.6, a: -0.6, name: 'speeding up, moving left' }
+  };
+  const st = { x0: -9, v0: 1.6, a: 0, t: 0, tEnd: T_MAX, playing: false, speed: 1, face: 1, picked: 'xn_vp' };
+
+  const X = t => st.x0 + st.v0 * t + 0.5 * st.a * t * t;
+  const V = t => st.v0 + st.a * t;
+  function computeEnd(){
+    let t = 0; const dt = 0.002;
+    while (t < T_MAX){ const x = X(t + dt); if (Math.abs(x) >= LIM){ break; } t += dt; }
+    st.tEnd = Math.max(0.01, Math.min(T_MAX, t));
+    $('r5T').max = st.tEnd.toFixed(2);
+  }
+  // distance run so far, for the leg cycle
+  function travelled(t){
+    const tr = st.a ? -st.v0 / st.a : -1;
+    const d = (a, b) => Math.abs(X(b) - X(a));
+    return tr > 0 && tr < t ? d(0, tr) + d(tr, t) : d(0, t);
+  }
+
+  const img = {};
+  ['jurassic.jpg', 'raptor-sheet.png'].forEach(src => { const i = new Image(); i.onload = draw; i.src = '../assets/img/' + src; img[src] = i; });
+  const ready = k => img[k].complete && img[k].naturalWidth;
+
+  function fit(cv){
+    const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+    if (cv.width !== Math.round(w*dpr) || cv.height !== Math.round(h*dpr)){ cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr); }
+    const ctx = cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return [ctx, w, h];
+  }
+  function tag(ctx, text, x, y, opts = {}){
+    const size = opts.size || 13;
+    ctx.font = `600 ${size}px ${css('--mono')}`;
+    const w = ctx.measureText(text).width + 12, h = size + 9;
+    const W = ctx.canvas.clientWidth, H = ctx.canvas.clientHeight;
+    let bx = opts.align === 'left' ? x : opts.align === 'right' ? x - w : x - w/2, by = y - h/2;
+    bx = Math.max(4, Math.min(W - w - 4, bx)); by = Math.max(4, Math.min(H - h - 4, by));
+    ctx.fillStyle = css('--sheet'); ctx.globalAlpha = 0.94; ctx.fillRect(bx, by, w, h); ctx.globalAlpha = 1;
+    ctx.strokeStyle = opts.edge || css('--ink'); ctx.lineWidth = 1.2; ctx.strokeRect(bx + .5, by + .5, w - 1, h - 1);
+    ctx.fillStyle = opts.color || css('--ink'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, bx + w/2, by + h/2 + 0.5);
+  }
+  function arrow(ctx, x0, y, len, col, w = 3.5){
+    if (Math.abs(len) < 2) return;
+    const x1 = x0 + len, dir = Math.sign(len);
+    ctx.save(); ctx.lineCap = 'round';
+    ctx.strokeStyle = 'rgba(10,14,18,.5)'; ctx.lineWidth = w + 3; ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1 - dir * 6, y); ctx.stroke();
+    ctx.strokeStyle = col; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1 - dir * 6, y); ctx.stroke();
+    ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x1 + dir * 3, y); ctx.lineTo(x1 - dir * 9, y - 7); ctx.lineTo(x1 - dir * 9, y + 7); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  function drawStage(){
+    const [ctx, W, H] = fit(stage);
+    ctx.clearRect(0, 0, W, H);
+    if (ready('jurassic.jpg')) ctx.drawImage(img['jurassic.jpg'], 0, 0, W, H); else { ctx.fillStyle = '#7d8a55'; ctx.fillRect(0, 0, W, H); }
+    const ox = BG.origin[0] * W, gy = BG.origin[1] * H, k = (BG.ten_m[0] - BG.origin[0]) * W / 10;   // px per metre
+    const px = m => ox + m * k;
+    const narrow = W < 520;
+    const lineY = gy + Math.max(14, H * 0.07);
+
+    // number line on the trail
+    ctx.save();
+    ctx.fillStyle = 'rgba(251,251,249,.9)'; ctx.fillRect(px(-LIM) - 10, lineY - 4, px(LIM) - px(-LIM) + 20, 26);
+    ctx.strokeStyle = '#1c2a3a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(px(-LIM), lineY); ctx.lineTo(px(LIM), lineY); ctx.stroke();
+    ctx.fillStyle = '#1c2a3a'; ctx.font = `600 ${narrow ? 9.5 : 11}px ${css('--mono')}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    for (let m = -LIM; m <= LIM; m++){
+      const big = m % 2 === 0, x = px(m);
+      ctx.lineWidth = m === 0 ? 2.5 : 1.2; ctx.beginPath(); ctx.moveTo(x, lineY - (m === 0 ? 8 : big ? 5 : 3)); ctx.lineTo(x, lineY + (m === 0 ? 8 : big ? 5 : 3)); ctx.stroke();
+      if (big && (!narrow || m % 4 === 0)) ctx.fillText(minus(String(m)), x, lineY + 7);
+    }
+    ctx.restore();
+    if (!narrow){
+      tag(ctx, 'origin', px(0), lineY + 36, { size: 11.5 });
+      tag(ctx, 'x < 0: left of origin', px(-LIM), lineY + 36, { size: 11.5, align: 'left' });
+      tag(ctx, 'x > 0: right of origin', px(LIM), lineY + 36, { size: 11.5, align: 'right' });
+    }
+
+    // motion-diagram dots every half second
+    for (let t = 0; t <= st.t + 1e-6; t += 0.5){
+      ctx.fillStyle = 'rgba(217,99,30,.9)'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(px(X(t)), lineY, 4, 0, 2*PI); ctx.fill(); ctx.stroke();
+    }
+
+    // the raptor
+    const x = X(st.t), v = V(st.t), a = st.a;
+    if (Math.abs(v) > 0.02) st.face = Math.sign(v);
+    const moving = Math.abs(v) > 0.05 && st.t < st.tEnd - 1e-6;
+    const frame = moving ? Math.floor(travelled(st.t) / STRIDE * 8) % 8 : 8;
+    const sheet = img['raptor-sheet.png'];
+    const spx = (RG.one_m_right[0] - RG.hip_ground[0]);                 // fraction of a frame per metre
+    const fw = k * DRAW_SCALE / spx;                                     // frame width on stage
+    const fh = fw * 300 / 480;
+    const hx = px(x), hy = gy;
+    // contact shadow
+    ctx.save(); ctx.fillStyle = 'rgba(20,14,6,.28)'; ctx.beginPath(); ctx.ellipse(hx + st.face * fw * 0.04, hy + 2, fw * 0.32, fw * 0.035, 0, 0, 2*PI); ctx.fill(); ctx.restore();
+    if (ready('raptor-sheet.png')){
+      const sw = sheet.naturalWidth / 9, sh = sheet.naturalHeight;
+      ctx.save(); ctx.translate(hx, hy); ctx.scale(st.face, 1);
+      ctx.drawImage(sheet, frame * sw, 0, sw, sh, -RG.hip_ground[0] * fw, -RG.hip_ground[1] * fh, fw, fh);
+      ctx.restore();
+    }
+    // position pointer
+    ctx.fillStyle = '#1c2a3a'; ctx.beginPath(); ctx.moveTo(hx, lineY - 7); ctx.lineTo(hx - 7, lineY - 18); ctx.lineTo(hx + 7, lineY - 18); ctx.closePath(); ctx.fill();
+
+    // velocity and acceleration arrows above the raptor
+    const top = hy - fh * 0.9;
+    const vy = Math.max(26, top - 6), ay = vy - 34;
+    arrow(ctx, hx, vy, v * k * 1.1, '#ff8a3d');
+    tag(ctx, `v = ${f(v, 2)} m/s`, hx + v * k * 1.1 + (v >= 0 ? 52 : -52), vy, { size: 12, color: css('--crimson-text') });
+    if (a !== 0){
+      arrow(ctx, hx, ay, a * k * 2.2, '#2f8fc0');
+      tag(ctx, `a = ${f(a, 1)} m/s² ${a > 0 ? 'pushed right' : 'pushed left'}`, hx + a * k * 2.2 + (a > 0 ? 96 : -96), ay, { size: 12, color: css('--fixed') });
+    } else tag(ctx, 'a = 0', hx, ay, { size: 12, color: css('--fixed') });
+    if (Math.abs(v) <= 0.05 && st.t > 0 && st.t < st.tEnd) tag(ctx, 'v(t) = 0: at rest for an instant', hx, ay - 30, { size: 12 });
+    tag(ctx, `x = ${f(x, 2)} m`, hx, lineY - 30, { size: 12 });
+    tag(ctx, `t = ${f(st.t, 2)} s`, 10, 22, { align: 'left' });
+    if (st.t >= st.tEnd - 1e-6 && Math.abs(X(st.tEnd)) >= LIM - 0.05) tag(ctx, 'End of the trail', W / 2, 22, { size: 12 });
+  }
+
+  /* ---------- three stacked graphs ---------- */
+  let plot = null;
+  function drawGraph(){
+    const [ctx, W, H] = fit(graph);
+    const ink = css('--ink'), soft = css('--ink-soft'), grid = css('--c-grid'), rule = css('--c-rule'), F = css('--mono');
+    ctx.clearRect(0, 0, W, H);
+    const L = 64, Rr = 14, T = 10, B = 34, gap = 14, ph = (H - T - B - 2 * gap) / 3, pw = W - L - Rr;
+    plot = { L, pw };
+    const Xp = t => L + t / st.tEnd * pw;
+    const rows = [
+      { label: 'x (m)', f: X, max: LIM, col: ink },
+      { label: 'v (m/s)', f: V, max: Math.max(1, Math.abs(st.v0), Math.abs(V(st.tEnd))) * 1.15, col: css('--crimson') },
+      { label: 'a (m/s²)', f: () => st.a, max: 2.2, col: css('--fixed') }
+    ];
+    rows.forEach((r, i) => {
+      const top = T + i * (ph + gap), mid = top + ph / 2;
+      const Yp = v => mid - v / r.max * (ph / 2);
+      ctx.fillStyle = css('--paper'); ctx.fillRect(L, top, pw, ph);
+      ctx.strokeStyle = grid; ctx.lineWidth = 1; ctx.strokeRect(L + .5, top + .5, pw - 1, ph - 1);
+      ctx.strokeStyle = rule; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(L, mid); ctx.lineTo(L + pw, mid); ctx.stroke();
+      ctx.font = `600 11.5px ${F}`; ctx.fillStyle = soft; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText(r.label, L - 8, mid); ctx.fillText('+', L - 8, top + 9); ctx.fillText('−', L - 8, top + ph - 9);
+      ctx.lineWidth = 3; ctx.lineCap = 'round';
+      const path = (a, b) => { ctx.beginPath(); for (let j = 0; j <= 120; j++){ const t = a + (b - a) * j / 120; const p = [Xp(t), Yp(r.f(t))]; j ? ctx.lineTo(...p) : ctx.moveTo(...p); } ctx.stroke(); };
+      ctx.strokeStyle = rule; path(st.t, st.tEnd);
+      ctx.strokeStyle = r.col; path(0, st.t);
+      ctx.fillStyle = r.col; ctx.beginPath(); ctx.arc(Xp(st.t), Yp(r.f(st.t)), 5, 0, 2*PI); ctx.fill();
+    });
+    // moment of rest
+    if (st.a){
+      const tr = -st.v0 / st.a;
+      if (tr > 0 && tr < st.tEnd){
+        ctx.strokeStyle = soft; ctx.setLineDash([3, 4]); ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(Xp(tr), T); ctx.lineTo(Xp(tr), T + 3 * ph + 2 * gap); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = soft; ctx.font = `600 11px ${F}`; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillText('v = 0', Xp(tr) + 4, T + 2);
+      }
+    }
+    ctx.fillStyle = soft; ctx.font = `600 11.5px ${F}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    const step = st.tEnd > 8 ? 2 : 1;
+    for (let t = 0; t <= st.tEnd + 1e-9; t += step) ctx.fillText(t, Xp(t), H - B + 8);
+    ctx.textAlign = 'right'; ctx.fillText('t (s)', L + pw, H - B + 21);
+  }
+
+  /* ---------- text ---------- */
+  function render(){
+    const t = st.t, x = X(t), v = V(t), a = st.a, eps = 0.05;
+    $('r5T').value = t.toFixed(2); $('r5TOut').textContent = f(t, 2) + ' s';
+    $('r5X0').value = st.x0; $('r5V0').value = st.v0; $('r5A').value = st.a;
+    $('r5X0Out').textContent = f(st.x0, 1) + ' m'; $('r5V0Out').textContent = f(st.v0, 1) + ' m/s'; $('r5AOut').textContent = f(st.a, 1) + ' m/s²';
+    $('r5gX').innerHTML = `${f(x)} <small>m</small>`;
+    $('r5gV').innerHTML = `${f(v)} <small>m/s</small>`;
+    $('r5gS').innerHTML = `${f(Math.abs(v))} <small>m/s</small>`;
+    $('r5gA').innerHTML = `${f(a, 1)} <small>m/s²</small>`;
+    const sx = Math.abs(x) < eps ? 0 : Math.sign(x), sv = Math.abs(v) < eps ? 0 : Math.sign(v), sa = Math.abs(a) < 1e-9 ? 0 : Math.sign(a);
+    let s1 = 'At rest', w1 = 'v(t) = 0';
+    if (sv && !sx){ s1 = 'At the origin'; w1 = 'x(t) = 0'; }
+    else if (sv){ s1 = sx === sv ? 'Away from origin' : 'Towards the origin'; w1 = `x ${sx > 0 ? '>' : '<'} 0 and v ${sv > 0 ? '>' : '<'} 0: ${sx === sv ? 'same' : 'opposite'} signs`; }
+    let s2 = 'At rest', w2 = 'v(t) = 0';
+    if (sv && !sa){ s2 = 'Constant speed'; w2 = 'a(t) = 0'; }
+    else if (sv){ s2 = sa === sv ? 'Speeding up' : 'Slowing down'; w2 = `v ${sv > 0 ? '>' : '<'} 0 and a ${sa > 0 ? '>' : '<'} 0: ${sa === sv ? 'same' : 'opposite'} signs`; }
+    $('r5Say1').textContent = s1; $('r5Why1').textContent = 'LT #1 · ' + w1;
+    $('r5Say2').textContent = s2; $('r5Why2').textContent = 'LT #2 · ' + w2;
+    $('r5gAV').innerHTML = t > 0 ? `${f((x - st.x0) / t)} <small>m/s</small>` : '— <small>m/s</small>';
+    $('r5gAA').innerHTML = t > 0 ? `${f((v - st.v0) / t, 1)} <small>m/s²</small>` : '— <small>m/s²</small>';
+    const dir = sv > 0 ? 'moving right' : sv < 0 ? 'moving left' : 'at rest';
+    $('r5Insight').innerHTML = `v(t) ${sv > 0 ? '> 0' : sv < 0 ? '< 0' : '= 0'}, so the raptor is <strong>${dir}</strong>. Speed is |v| = ${f(Math.abs(v))} m/s: speed has no direction, velocity does.`;
+    $('r5Case').textContent = st.picked && CASES[st.picked] ? `Started as: ${CASES[st.picked].name}` : 'Custom start';
+    // live highlight in both tables
+    const k1 = sx && sv ? `${sx > 0 ? 'xp' : 'xn'}_${sv > 0 ? 'vp' : 'vn'}` : null;
+    const k2 = sv && sa ? `${sv > 0 ? 'vp' : 'vn'}_${sa > 0 ? 'ap' : 'an'}` : null;
+    document.querySelectorAll('.pun .cell').forEach(b => {
+      const on = b.dataset.case === k1 || b.dataset.case === k2;
+      b.classList.toggle('on', on); b.classList.toggle('picked', b.dataset.case === st.picked);
+      b.setAttribute('aria-pressed', b.dataset.case === st.picked);
+    });
+  }
+  function draw(){ drawStage(); drawGraph(); }
+  function update(){ render(); draw(); }
+
+  /* ---------- controls ---------- */
+  let last = 0;
+  function loop(now){
+    if (!st.playing) return;
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    st.t = Math.min(st.tEnd, st.t + dt * st.speed);
+    if (st.t >= st.tEnd){ st.playing = false; $('r5Play').textContent = 'Replay'; }
+    update(); if (st.playing) requestAnimationFrame(loop);
+  }
+  function play(){ if (st.t >= st.tEnd) st.t = 0; st.playing = true; $('r5Play').textContent = 'Pause'; last = performance.now(); requestAnimationFrame(loop); }
+  function pause(){ st.playing = false; $('r5Play').textContent = 'Play'; }
+  function load(key){
+    const c = CASES[key]; st.x0 = c.x0; st.v0 = c.v0; st.a = c.a; st.picked = key; st.t = 0; st.face = Math.sign(c.v0) || 1;
+    computeEnd(); update();
+  }
+  $('r5Play').addEventListener('click', () => st.playing ? pause() : play());
+  $('r5Reset').addEventListener('click', () => { pause(); st.t = 0; update(); });
+  $('r5T').addEventListener('input', e => { pause(); st.t = +e.target.value; update(); });
+  ['r5X0', 'r5V0', 'r5A'].forEach(id => $(id).addEventListener('input', () => {
+    pause(); st.x0 = +$('r5X0').value; st.v0 = +$('r5V0').value; st.a = +$('r5A').value; st.picked = null; st.t = 0;
+    st.face = Math.sign(st.v0) || st.face; computeEnd(); update();
+  }));
+  document.querySelectorAll('[data-sp5]').forEach(b => b.addEventListener('click', () => {
+    st.speed = +b.dataset.sp5; document.querySelectorAll('[data-sp5]').forEach(o => o.setAttribute('aria-pressed', o === b));
+  }));
+  document.querySelectorAll('.pun .cell').forEach(b => b.addEventListener('click', () => { pause(); load(b.dataset.case); play(); }));
+  function scrubFrom(e){
+    if (!plot) return;
+    const rc = graph.getBoundingClientRect();
+    st.t = Math.max(0, Math.min(st.tEnd, (e.clientX - rc.left - plot.L) / plot.pw * st.tEnd)); update();
+  }
+  let drag = false;
+  graph.addEventListener('pointerdown', e => { pause(); drag = true; graph.setPointerCapture(e.pointerId); scrubFrom(e); });
+  graph.addEventListener('pointermove', e => { if (drag) scrubFrom(e); });
+  graph.addEventListener('pointerup', () => { drag = false; });
+
+  new ResizeObserver(draw).observe(stage); new ResizeObserver(draw).observe(graph);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  document.fonts && document.fonts.ready.then(draw);
+
+  load('xn_vp'); st.t = 3; update();
+  if (!reduce && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting){ io.disconnect(); setTimeout(() => { if (!st.playing){ st.t = 0; update(); play(); } }, 500); } }, { threshold: 0.4 });
+    io.observe(stage);
+  }
+})();
+</script>
+
+</body></html>
